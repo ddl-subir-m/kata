@@ -48,7 +48,8 @@ brew install gh ripgrep node
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-No other plugins are required. The seven skills in section 2 cover every stage of the loop.
+No other plugins are required, and nothing is cloned by hand. The eight skills in section 2
+cover every stage of the loop, scaffolding included.
 
 ---
 
@@ -71,7 +72,7 @@ cat <<'MID'
 
 MID
 
-for s in shape-request domain-modeling design-check tdd scoped-review land diagnose; do
+for s in new-repo shape-request domain-modeling design-check tdd scoped-review land diagnose; do
   embed "skills/$s/SKILL.md" markdown
 done
 

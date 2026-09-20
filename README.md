@@ -17,10 +17,11 @@ work is worth doing and whether the draft is right. The agent does the writing.
     /plugin marketplace add ddl-subir-m/how-i-ship
     /plugin install how-i-ship@how-i-ship
 
-Seven skills. No other plugins required.
+Eight skills. No other plugins required, and nothing to clone.
 
 | Stage | Skill | What it does |
 | --- | --- | --- |
+| 00 | `new-repo` | Scaffolds a new repo from the installed plugin. No clone needed |
 | 01 | `shape-request` | One question at a time until the spec writes itself, then tickets with dependencies |
 | 01/02 | `domain-modeling` | `CONTEXT.md` entries and ADRs whose titles are the decision |
 | 02 | `design-check` | Checks a screen against this repo's design system before anyone opens it |
@@ -31,8 +32,12 @@ Seven skills. No other plugins required.
 
 ## Scaffold a new repo
 
-    git clone git@github.com:ddl-subir-m/how-i-ship.git
-    ./how-i-ship/scaffold.sh /path/to/new-repo
+Ask for one in any directory, and the `new-repo` skill runs the scaffold out of the installed
+plugin. Nothing to clone.
+
+To run it by hand instead:
+
+    ~/.claude/plugins/marketplaces/how-i-ship/scaffold.sh /path/to/new-repo
 
 Eleven files and one symlink. It never overwrites anything, so it is safe to re-run.
 

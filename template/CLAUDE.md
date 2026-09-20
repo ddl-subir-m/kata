@@ -163,6 +163,7 @@ Installed from the `how-i-ship` plugin. One per stage:
 
 | Stage | Skill |
 | --- | --- |
+| 00 Scaffold a repo like this one | `new-repo` |
 | 01 Shape a request into a spec and tickets | `shape-request` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |
 | 02 Check a screen before anyone opens it | `design-check` |
