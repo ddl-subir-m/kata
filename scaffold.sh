@@ -26,6 +26,7 @@ copy() {
 echo "Scaffolding $DEST"
 copy CLAUDE.md
 copy CONTEXT.md
+copy .claude/settings.json
 copy docs/design-system.md
 copy docs/adr/0000-template.md
 copy docs/agents/issue-tracker.md

@@ -39,9 +39,10 @@ To run it by hand instead:
 
     ~/.claude/plugins/marketplaces/how-i-ship/scaffold.sh /path/to/new-repo
 
-Eleven files and one symlink. It never overwrites anything, so it is safe to re-run.
+Twelve files and one symlink. It never overwrites anything, so it is safe to re-run.
 
     CLAUDE.md                     13 standing rules, with an example each
+    .claude/settings.json         declares this marketplace, enables this plugin
     AGENTS.md -> CLAUDE.md        so Claude and Codex read the same text
     CONTEXT.md                    the shared vocabulary
     docs/design-system.md         what design-check reads

@@ -100,6 +100,7 @@ These are what `scaffold.sh` copies.
 
 MID4
 
+embed template/.claude/settings.json json
 embed template/CLAUDE.md markdown
 embed template/CONTEXT.md markdown
 embed template/docs/adr/0000-template.md markdown

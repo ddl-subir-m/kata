@@ -33,7 +33,7 @@ Ask for the target directory if the person did not name one. Do not assume the c
 
 Then say what will happen, in one line, and wait:
 
-> "This writes 11 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
+> "This writes 12 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
 > already exists. Go ahead?"
 
 The script never overwrites, so re-running it is safe. Say that — it removes the main worry.
@@ -62,7 +62,24 @@ The script prints these. Do not just repeat them — offer to do the ones you ca
 **Step 5 is the one people skip, and it is the one that matters.** A green suite proves nothing
 until you have seen it red. Run it and show the failure — do not just say the gate works.
 
-## 5. Adjust the stack if it is not Python plus Node
+## 5. The repo declares the plugin it needs
+
+`.claude/settings.json` is committed, and it names this marketplace and enables this plugin. Anyone
+who opens the repo gets the eight skills without installing anything.
+
+Two things to tell the person:
+
+- **It waits for workspace trust.** A teammate's first session in the repo shows a trust prompt,
+  and the skills are absent until they accept. That is deliberate: a committed settings file would
+  otherwise install code on their machine unasked.
+- **Their own plugins survive.** `enabledPlugins` merges per key across scopes, so a project file
+  enabling this plugin does not disable anyone's user-level ones. Only a key named in both places
+  changes, and the project file wins there.
+
+If the repo is private, a teammate without access gets a fetch failure rather than a helpful
+message. Say so when you hand back.
+
+## 6. Adjust the stack if it is not Python plus Node
 
 The `Makefile` and the CI workflow assume `uv` and `npm`. If the repo is something else, change
 the two gate commands and say what you changed.
@@ -90,7 +107,7 @@ lint:
 The canary test becomes a check that the tools your suite skips on are present on CI — the same
 idea, different tool names.
 
-## 6. Hand back
+## 7. Hand back
 
 Say plainly:
 

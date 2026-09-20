@@ -1,0 +1,10 @@
+{
+  "extraKnownMarketplaces": {
+    "how-i-ship": {
+      "source": { "source": "github", "repo": "ddl-subir-m/how-i-ship" }
+    }
+  },
+  "enabledPlugins": {
+    "how-i-ship@how-i-ship": true
+  }
+}
