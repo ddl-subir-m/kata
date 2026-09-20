@@ -75,19 +75,10 @@ for s in shape-request domain-modeling design-check tdd scoped-review land diagn
   embed "skills/$s/SKILL.md" markdown
 done
 
-cat <<'MID2'
----
-
-## 4. The command in full
-
-MID2
-
-embed commands/push.md markdown
-
 cat <<'MID3'
 ---
 
-## 5. Scaffold a new repo
+## 4. Scaffold a new repo
 
 ```bash
 ./scaffold.sh /path/to/new-repo
@@ -102,7 +93,7 @@ embed scaffold.sh bash
 cat <<'MID4'
 ---
 
-## 6. The template files in full
+## 5. The template files in full
 
 These are what `scaffold.sh` copies.
 
@@ -119,7 +110,7 @@ embed template/docs/design-system.md markdown
 cat <<'MID5'
 ---
 
-## 7. The two gates in full
+## 6. The two gates in full
 
 `make test` and `make lint`. The same two run on a laptop and in CI, so they cannot drift apart.
 Build these on day one — an agent cannot check its own work without them.
@@ -145,7 +136,7 @@ cat <<'TAIL'
 
 ---
 
-## 8. The order to do it
+## 7. The order to do it
 
 **Day 1, about 30 minutes.** Run the scaffold. Get `make test` and `make lint` green. Plant a
 deliberate failure and watch it go red. You now have a feedback loop the agent cannot weaken.
@@ -157,7 +148,7 @@ labels. You now have a vocabulary and a bar for filing.
 
 ---
 
-## 9. What to leave behind
+## 8. What to leave behind
 
 Do not carry another repo's `CLAUDE.md` in wholesale. Most of a mature one is scar tissue:
 answers to problems your new repo does not have yet. Carrying them in makes the file unreadable on

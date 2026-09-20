@@ -17,7 +17,7 @@ work is worth doing and whether the draft is right. The agent does the writing.
     /plugin marketplace add ddl-subir-m/how-i-ship
     /plugin install how-i-ship@how-i-ship
 
-Seven skills and one command. No other plugins required.
+Seven skills. No other plugins required.
 
 | Stage | Skill | What it does |
 | --- | --- | --- |
@@ -28,8 +28,6 @@ Seven skills and one command. No other plugins required.
 | 05 | `scoped-review` | Review the changed paths only. Never the whole repo, never the full suite |
 | 05 | `land` | Merge main before the suite, then prove the tested tree is the landing tree |
 | 06 | `diagnose` | Reproduce, bisect the condition, hand back a root cause and a rejected fix |
-
-Command: `/push` — commit and push, never to the default branch.
 
 ## Scaffold a new repo
 

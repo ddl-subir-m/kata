@@ -8,7 +8,15 @@
   },
   "repository": "https://github.com/ddl-subir-m/how-i-ship",
   "license": "MIT",
-  "keywords": ["engineering", "skills", "tdd", "code-review", "adr", "landing", "ci"],
+  "keywords": [
+    "engineering",
+    "skills",
+    "tdd",
+    "code-review",
+    "adr",
+    "landing",
+    "ci"
+  ],
   "skills": [
     "./skills/shape-request",
     "./skills/domain-modeling",
@@ -17,6 +25,5 @@
     "./skills/scoped-review",
     "./skills/land",
     "./skills/diagnose"
-  ],
-  "commands": ["./commands/push.md"]
+  ]
 }
