@@ -1,0 +1,17 @@
+{
+  "name": "how-i-ship",
+  "owner": {
+    "name": "Subir Mansukhani",
+    "url": "https://github.com/ddl-subir-m"
+  },
+  "description": "One loop, six stages, an agent at every step. The skills, the repo scaffold and the two gates that make an agent able to check its own work.",
+  "plugins": [
+    {
+      "name": "how-i-ship",
+      "source": "./",
+      "description": "Skills for the six-stage ship loop: shape a request, model the domain, write the test first, review the changed paths only, land safely, diagnose an alert.",
+      "category": "engineering",
+      "keywords": ["engineering", "skills", "tdd", "code-review", "adr", "landing", "ci"]
+    }
+  ]
+}
