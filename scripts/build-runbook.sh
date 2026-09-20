@@ -55,10 +55,46 @@ cover every stage of the loop, scaffolding included.
 
 ## 2. Install the skills
 
+Pick a scope. Both are one line.
+
+**User scope** — live in every project on the machine:
+
+```bash
+claude plugin marketplace add ddl-subir-m/how-i-ship \
+  && claude plugin install how-i-ship@how-i-ship
+```
+
+**Project scope** — run inside the repo, then commit the file it writes:
+
+```bash
+claude plugin marketplace add ddl-subir-m/how-i-ship --scope project \
+  && claude plugin install how-i-ship@how-i-ship --scope project
+
+git add .claude/settings.json && git commit -m "Adopt the how-i-ship skills"
+```
+
+The slash commands do the same at user scope, from inside a session:
+
 ```
 /plugin marketplace add ddl-subir-m/how-i-ship
 /plugin install how-i-ship@how-i-ship
 ```
+
+Eight skills, about 891 tokens always-on. A skill's full text is read only when it fires.
+
+The scaffold writes that same `.claude/settings.json` into every new repo, byte for byte, so a
+scaffolded repo needs nobody to run the install at all.
+
+Three things a teammate hits:
+
+- **Project scope waits for workspace trust.** The first session shows a prompt; the skills are
+  absent until it is accepted.
+- **A project-scope plugin cannot be uninstalled per person.** To turn it off for yourself only:
+  `claude plugin disable how-i-ship@how-i-ship --scope local`
+- **Existing plugins are safe.** `enabledPlugins` merges per key across scopes.
+
+A host other than GitHub takes the full git URL instead of the `owner/repo` shorthand. Point at
+the repo, never at the raw `marketplace.json`.
 
 HEAD
 

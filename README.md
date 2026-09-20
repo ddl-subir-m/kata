@@ -12,12 +12,68 @@ documents becomes the record of how the software got built.
 Nobody writes the spec by hand. Nobody writes the ticket by hand. The person decides whether the
 work is worth doing and whether the draft is right. The agent does the writing.
 
-## Install the skills
+## Install
+
+Pick a scope. Both are one line, and nothing is cloned by hand.
+
+**User scope** — the skills are live in every project on your machine:
+
+```bash
+claude plugin marketplace add ddl-subir-m/how-i-ship \
+  && claude plugin install how-i-ship@how-i-ship
+```
+
+**Project scope** — run it inside the repo, then commit the file it writes, and everyone on the
+repo gets the skills:
+
+```bash
+claude plugin marketplace add ddl-subir-m/how-i-ship --scope project \
+  && claude plugin install how-i-ship@how-i-ship --scope project
+
+git add .claude/settings.json && git commit -m "Adopt the how-i-ship skills"
+```
+
+Already in a Claude Code session? The slash commands do the same thing, at user scope:
 
     /plugin marketplace add ddl-subir-m/how-i-ship
     /plugin install how-i-ship@how-i-ship
 
-Eight skills. No other plugins required, and nothing to clone.
+Eight skills, about 891 tokens always-on. The full text of a skill is only read when it fires.
+
+### Not on GitHub?
+
+The `owner/repo` shorthand is GitHub-only. Any other git host takes the full URL, HTTPS or SSH:
+
+```bash
+claude plugin marketplace add https://gitlab.com/company/how-i-ship.git
+claude plugin marketplace add git@bitbucket.org:you/how-i-ship.git
+claude plugin marketplace add ./path/to/how-i-ship
+```
+
+Point at the **repo**, never at the raw `marketplace.json`. A direct link to that file downloads
+only the file, and the plugin's `"source": "./"` then has nothing to resolve against.
+
+### Notes for teammates
+
+**Project scope waits for workspace trust.** The first session in the repo shows a trust prompt,
+and the skills are absent until it is accepted. That is deliberate: a committed settings file
+would otherwise install code on someone's machine unasked.
+
+**A project-scope plugin cannot be uninstalled per person.** It is owned by the shared settings
+file. Anyone who does not want it turns it off for themselves only:
+
+```bash
+claude plugin disable how-i-ship@how-i-ship --scope local
+```
+
+**Your own plugins are safe.** `enabledPlugins` merges per key across scopes, so adopting this at
+project scope leaves every user-level plugin enabled. Only a key named in both places changes, and
+the project file wins there.
+
+### Both scopes at once
+
+They compose. A project file says what the repo needs; your user install says what you want
+everywhere. `claude plugin list` shows the scope of each, and flags any key set in both.
 
 | Stage | Skill | What it does |
 | --- | --- | --- |
