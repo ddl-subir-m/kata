@@ -80,7 +80,11 @@ The slash commands do the same at user scope, from inside a session:
 /plugin install how-i-ship@how-i-ship
 ```
 
-Eight skills, about 891 tokens always-on. A skill's full text is read only when it fires.
+Nine skills, about 936 tokens always-on. A skill's full text is read only when it fires.
+
+One of them, `the-loop`, is a router you invoke by name when you cannot remember which skill fits.
+It carries `disable-model-invocation: true`, so it never fires on its own and costs only ~40
+tokens always-on against a ~2.2k body.
 
 The scaffold writes that same `.claude/settings.json` into every new repo, byte for byte, so a
 scaffolded repo needs nobody to run the install at all.
@@ -108,7 +112,7 @@ cat <<'MID'
 
 MID
 
-for s in new-repo shape-request domain-modeling design-check tdd scoped-review land diagnose; do
+for s in the-loop new-repo shape-request domain-modeling design-check tdd scoped-review land diagnose; do
   embed "skills/$s/SKILL.md" markdown
 done
 
