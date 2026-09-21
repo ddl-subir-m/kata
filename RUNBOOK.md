@@ -2226,13 +2226,30 @@ if git rev-parse --git-dir >/dev/null 2>&1 && gh repo view >/dev/null 2>&1; then
     gh label create "$L" --force >/dev/null 2>&1 && echo "  label  $L"
   done
 else
-  echo "No GitHub remote yet - create the labels later:"
-  echo "  for L in needs-triage needs-info ready-for-agent ready-for-human wontfix later; do gh label create \$L --force; done"
+  # Say it here, at the point of failure - and again in the checklist below, because a line
+  # printed twelve lines above a numbered list is a line people scroll past.
+  echo "No GitHub remote yet - the triage labels were not created. See step 0 below."
+  LABELS_PENDING="yes"
+fi
+
+echo
+echo "Done. Next, by hand:"
+
+if [ -n "$LABELS_PENDING" ]; then
+  cat <<'LABELS'
+  0. Create the repo on GitHub, then create the triage labels:
+       gh repo create
+       for L in needs-triage needs-info ready-for-agent ready-for-human wontfix later; do gh label create $L --force; done
+
+     Numbered 0 because it comes before the rest: until those labels exist,
+     `triage` has no vocabulary, and `ready-for-agent` - the one label the whole
+     queue turns on - cannot be set at all. On a repo that already has a remote
+     this step is done for you and you never see it.
+
+LABELS
 fi
 
 cat <<'NEXT'
-
-Done. Next, by hand:
   1. Fill CONTEXT.md with the first three words that matter. Delete the example entry.
   2. Write ADR-0001. Title it with the decision itself.
   3. Fill docs/design-system.md, or delete it if this repo has no UI.
