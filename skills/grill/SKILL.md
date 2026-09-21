@@ -1,6 +1,6 @@
 ---
 name: grill
-description: Stress-test a plan, a decision or an idea with hard questions, one at a time, grounded in the repo's own ADRs and vocabulary rather than asked from nothing. Use when thinking needs pressure-testing before it becomes work, or when something sounds right but has not been challenged. Triggers - "grill me", "poke holes in this", "stress-test this plan", "what am I missing", "challenge this".
+description: Stress-test a plan, a decision or an idea with hard questions, one at a time - grounded in the repo's own ADRs and vocabulary, and writing what settles back out as ADRs and glossary entries. Use when thinking needs pressure-testing before it becomes work, or when something sounds right but has not been challenged. Triggers - "grill me", "poke holes in this", "stress-test this plan", "what am I missing", "challenge this".
 ---
 
 # Grill
@@ -72,5 +72,29 @@ Stop when the next question would be invented rather than found. Then summarise:
 - **What is still open**, as questions.
 - **What you think is the weakest point**, said plainly, once.
 
-Then hand it to `shape-request` to become a spec, or `domain-modeling` if what settled was a word
-or a decision rather than a plan.
+## Write the record as you go
+
+A grilling that settles something and leaves no trace has to be repeated, and the second time
+nobody remembers the reasoning that made the first one land. Capture as you go, not at the end -
+by the end the wording that convinced somebody has already been paraphrased away.
+
+Use the `domain-modeling` skill to write these. Do not hand-roll the files; it knows the shapes.
+
+| What just happened | What to write |
+| --- | --- |
+| A decision got made that outlives this branch | An ADR in `docs/adr/`, titled with the decision itself |
+| A word turned out to mean two things | A `CONTEXT.md` entry naming which one wins here |
+| An answer rested on a fact nobody has | Nothing yet - hand it to `research` first |
+| Something was ruled OUT, and why | The same ADR. The rejected option is half its value. |
+
+**Not every answer earns an ADR.** The bar is whether somebody six months out would otherwise
+re-open it. A decision that only shapes this branch belongs in the branch, not in `docs/adr/`.
+
+**Write the rejected options down.** An ADR that lists only what was chosen reads as arbitrary, and
+the next person re-argues the alternatives from scratch. The grilling is where those alternatives
+were named out loud - that is the one moment they are cheap to record.
+
+Say which files you wrote, or say plainly that nothing met the bar. Both are real outcomes; a
+grilling that produces no ADR is not a grilling that failed.
+
+Then hand it to `shape-request` to become a spec.
