@@ -32,7 +32,7 @@ There is no step two. You now have eighteen skills, and you use them by asking:
 
 > "triage the inbox"  ·  "implement #42"  ·  "review this"  ·  "what now?"
 
-**`new-repo` is one of those skills, not an install step.** If you are starting from an empty
+**`setup-repo` is one of those skills, not an install step.** If you are starting from an empty
 directory, ask for it and it writes 12 files and an `AGENTS.md` symlink — the rules, the docs, the
 two gates, CI. If you work on repos that already exist, you will never use it.
 
@@ -53,7 +53,7 @@ skills, so a teammate who clones it is offered the same install.
 | Stage | Skill | What it does |
 | --- | --- | --- |
 | — | `what-now` | Ask which skill fits. A router over the others, and a map of the flow |
-| 00 | `new-repo` | Scaffolds a new repo from the installed plugin. No clone needed |
+| 00 | `setup-repo` | Wires the loop into any repo, new or old. Fills gaps, never overwrites |
 | 00/01 | `triage` | Works the issue inbox. Every open item gets a label it earns |
 | 01 | `grill` | Stress-tests a plan with hard questions, one at a time |
 | 01 | `shape-request` | One question at a time until the spec writes itself, then tickets |
@@ -84,16 +84,23 @@ Ask for `what-now`. It is a router: it walks the six stages, names the branch po
 request even need shaping? is this red even yours?), and says plainly what this repo does **not**
 cover. It never fires on its own — you have to ask for it.
 
-## Scaffold a new repo
+## Set up a repo
 
-Ask for one in any directory, and the `new-repo` skill runs the scaffold out of the installed
-plugin. Nothing to clone.
+Ask for `setup-repo` in any directory and it runs the scaffold out of the installed plugin.
+Nothing to clone.
+
+**It works on a repo you already have.** It never overwrites, so on a codebase with years of
+history it adds only what is missing and leaves the rest alone. Re-running is safe.
+
+The exception is `CLAUDE.md`. A live repo has its own, so that one is skipped and the standing
+rules are written beside it as `CLAUDE.kata.md` for you to merge — the script says so when it
+happens. Until you merge them, the skills are running without the rules they were written against.
 
 To run it by hand instead:
 
-    ~/.claude/plugins/marketplaces/subir/scaffold.sh /path/to/new-repo
+    ~/.claude/plugins/marketplaces/subir/scaffold.sh /path/to/repo
 
-Twelve files and one symlink. It never overwrites anything, so it is safe to re-run.
+Twelve files and one symlink into an empty directory; fewer into a repo that already has some.
 
     CLAUDE.md                     13 standing rules, with an example each
     .claude/settings.json         declares this marketplace, enables this plugin

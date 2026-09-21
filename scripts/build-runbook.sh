@@ -105,7 +105,7 @@ One of them, `what-now`, is a router you invoke by name when you cannot remember
 fits. It carries `disable-model-invocation: true`, so it never fires on its own and costs only
 ~40 tokens always-on against a ~2.2k body.
 
-The scaffold writes that same `.claude/settings.json` into every new repo, byte for byte, so a
+The scaffold writes that same `.claude/settings.json` into every repo it touches, byte for byte, so a
 scaffolded repo needs nobody to run the install at all.
 
 Three things a teammate hits:
@@ -131,7 +131,7 @@ cat <<'MID'
 
 MID
 
-for s in what-now new-repo triage grill shape-request research domain-modeling codebase-design \
+for s in what-now setup-repo triage grill shape-request research domain-modeling codebase-design \
          design-check prototype implement tdd scoped-review merge-conflicts land diagnose \
          wizard writing-for-agents; do
   embed "skills/$s/SKILL.md" markdown
@@ -140,10 +140,10 @@ done
 cat <<'MID3'
 ---
 
-## 4. Scaffold a new repo
+## 4. Set up a repo
 
 ```bash
-./scaffold.sh /path/to/new-repo
+./scaffold.sh /path/to/repo
 ```
 
 MID3

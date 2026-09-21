@@ -164,7 +164,7 @@ Installed from the `kata` plugin. One per stage:
 | Stage | Skill |
 | --- | --- |
 | Not sure which applies | `what-now` (a router; ask for it by name) |
-| 00 Scaffold a repo like this one | `new-repo` |
+| 00 Scaffold a repo like this one | `setup-repo` |
 | 00/01 Work the issue inbox, label what earns it | `triage` |
 | 01 Stress-test the thinking first | `grill` |
 | 01 Shape a request into a spec and tickets | `shape-request` |

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Scaffold a new repo with the ship loop already wired.
+# Set up a repo with the ship loop already wired. New repo or existing one.
 #
-#   ./scaffold.sh /path/to/new-repo
+#   ./scaffold.sh /path/to/repo
 #
 # Copies the template files, symlinks AGENTS.md to CLAUDE.md, and creates the triage labels if a
 # GitHub remote is already set. Never overwrites a file that exists, so it is safe to re-run.

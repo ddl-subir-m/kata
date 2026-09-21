@@ -17,11 +17,16 @@ reading it.** The trail of documents becomes the record of how the software got 
 
 ## Stage 00: is there a repo yet?
 
-**No repo, or a repo with no `CLAUDE.md` and no gates** → **`new-repo`**. It writes the standing
-rules, the vocabulary files, the tracker conventions and the two gates. Do this before anything
-else; the rest of the loop assumes those files exist.
+**No repo, or a repo missing any of the rules, docs or gates** → **`setup-repo`**. It writes the
+standing rules, the vocabulary files, the tracker conventions and the two gates. Do this before
+anything else; the rest of the loop assumes those files exist.
 
-Already set up → skip to stage 01.
+It is not only for empty directories. It never overwrites, so on a repo with years of history it
+fills the gaps and leaves everything else alone. The one it cannot fill is `CLAUDE.md`: a live repo
+has its own, so the standing rules land beside it in `CLAUDE.kata.md` and the merge is a person's
+call.
+
+Everything already in place → skip to stage 01.
 
 ## Before stage 01: is it in the tracker?
 
@@ -195,4 +200,4 @@ Say so rather than improvising a substitute:
 ## Precondition
 
 The tracker conventions, the triage labels and the doc layout the other skills assume are written
-by **`new-repo`**. If `docs/agents/` is missing, run that first.
+by **`setup-repo`**. If `docs/agents/` is missing, run that first.
