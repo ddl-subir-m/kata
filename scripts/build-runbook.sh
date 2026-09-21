@@ -148,8 +148,20 @@ cat <<'MID3'
 
 MID3
 
-# Derived, not typed: the count drifted once when a twelfth template file was added.
-echo "$(grep -c '^copy ' scaffold.sh) files and one symlink. It never overwrites a file that exists, so it is safe to re-run."
+# Derived, not typed - and derived from the DELIVERED SET, not from one branch of the
+# script. Counting `^copy ` lines undercounts by one, because CLAUDE.md is written by the
+# if/else that drops CLAUDE.kata.md beside an existing one. That off-by-one shipped: the
+# RUNBOOK said eleven while the README said twelve, and both were generated from this file.
+SCAFFOLDED=$(find template -type f | wc -l | tr -d ' ')
+
+# An orphan template file is copied by nothing and still counted here, which would make the
+# number confidently wrong in the other direction. Fail the build instead of printing it.
+for f in $(cd template && find . -type f | sed 's|^\./||'); do
+  grep -q "copy $f\$" scaffold.sh || [ "$f" = "CLAUDE.md" ] || {
+    echo "build-runbook: template/$f is copied by nothing in scaffold.sh" >&2; exit 1; }
+done
+
+echo "$SCAFFOLDED files and one symlink. It never overwrites a file that exists, so it is safe to re-run."
 echo
 
 embed scaffold.sh bash

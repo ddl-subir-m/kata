@@ -38,7 +38,7 @@ Both are supported and the script is the same. What differs is what you promise.
 
     ls -A <target> 2>/dev/null | head -1        # empty output = nothing there yet
 
-**Empty.** All 12 files land, plus the symlink. Say that.
+**Empty.** All 13 files land, plus the symlink. Say that.
 
 **Has history.** Most of the 12 may already exist under other names, and the script writes only
 what is missing. Do not promise 12. Look first, then say what is actually absent:
@@ -70,7 +70,7 @@ Ask for the target directory if the person did not name one. Do not assume the c
 
 Then say what will happen, in one line, and wait:
 
-> "This writes 12 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
+> "This writes 13 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
 > already exists. Go ahead?"
 
 For a repo with history, name the real number instead, and name what it will not do:

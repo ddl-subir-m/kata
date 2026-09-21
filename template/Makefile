@@ -3,7 +3,10 @@
 # One-command reproducible setup. Lockfile-driven, so a fresh clone and CI install the same bytes.
 setup:
 	uv sync --extra dev
-	npm ci
+# npm ci needs a package.json AND a lockfile. A fresh repo has neither, and a Python-only
+# repo never will. Guarding it keeps `make setup` working from the first minute; the moment
+# a package.json exists the install is lockfile-driven again, which is the point.
+	@if [ -f package.json ]; then npm ci; else echo "  no package.json - skipping npm ci"; fi
 
 # THE test gate. CI runs this exact target, so CI and a laptop cannot drift apart.
 #

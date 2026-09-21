@@ -46,6 +46,7 @@ copy docs/adr/0000-template.md
 copy docs/agents/issue-tracker.md
 copy docs/agents/triage-labels.md
 copy docs/agents/domain.md
+copy pyproject.toml
 copy Makefile
 copy .python-version
 copy .github/workflows/tests.yml

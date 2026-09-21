@@ -1,0 +1,30 @@
+# The two gates need a manifest to run against. This is the smallest one that works,
+# and it is meant to be edited: rename the project, add your real dependencies.
+#
+# `package = false` is what lets a repo with no source layout yet run `uv sync` at all.
+# Without it uv tries to build this project, finds nothing to build, and the gates fail
+# before they have run a single test. Delete that line once you have a real package.
+
+[project]
+name = "app"
+version = "0.0.0"
+description = "Rename this."
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+# `pytest-xdist` is not optional: the test gate runs `-n auto`, which is xdist.
+dev = [
+  "pytest>=8.3",
+  "pytest-xdist>=3.6",
+  "ruff==0.14.3",
+]
+
+[tool.uv]
+# No source layout yet, so there is nothing to build. See the note at the top.
+package = false
+
+[tool.ruff]
+# Pinned to the exact version in the dev extra above. A lint gate that can resolve a
+# different ruff than CI is a gate that disagrees with CI about a clean run.
+required-version = "0.14.3"

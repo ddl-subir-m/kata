@@ -426,7 +426,7 @@ Both are supported and the script is the same. What differs is what you promise.
 
     ls -A <target> 2>/dev/null | head -1        # empty output = nothing there yet
 
-**Empty.** All 12 files land, plus the symlink. Say that.
+**Empty.** All 13 files land, plus the symlink. Say that.
 
 **Has history.** Most of the 12 may already exist under other names, and the script writes only
 what is missing. Do not promise 12. Look first, then say what is actually absent:
@@ -458,7 +458,7 @@ Ask for the target directory if the person did not name one. Do not assume the c
 
 Then say what will happen, in one line, and wait:
 
-> "This writes 12 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
+> "This writes 13 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
 > already exists. Go ahead?"
 
 For a repo with history, name the real number instead, and name what it will not do:
@@ -2059,7 +2059,7 @@ costing every session from now on.
 ./scaffold.sh /path/to/repo
 ```
 
-11 files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
+13 files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
 
 ### `scaffold.sh`
 
@@ -2112,6 +2112,7 @@ copy docs/adr/0000-template.md
 copy docs/agents/issue-tracker.md
 copy docs/agents/triage-labels.md
 copy docs/agents/domain.md
+copy pyproject.toml
 copy Makefile
 copy .python-version
 copy .github/workflows/tests.yml
@@ -2830,7 +2831,10 @@ Build these on day one — an agent cannot check its own work without them.
 # One-command reproducible setup. Lockfile-driven, so a fresh clone and CI install the same bytes.
 setup:
 	uv sync --extra dev
-	npm ci
+# npm ci needs a package.json AND a lockfile. A fresh repo has neither, and a Python-only
+# repo never will. Guarding it keeps `make setup` working from the first minute; the moment
+# a package.json exists the install is lockfile-driven again, which is the point.
+	@if [ -f package.json ]; then npm ci; else echo "  no package.json - skipping npm ci"; fi
 
 # THE test gate. CI runs this exact target, so CI and a laptop cannot drift apart.
 #
