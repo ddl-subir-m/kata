@@ -94,6 +94,9 @@ re-open it. A decision that only shapes this branch belongs in the branch, not i
 the next person re-argues the alternatives from scratch. The grilling is where those alternatives
 were named out loud - that is the one moment they are cheap to record.
 
+In a repo you do not own, use `grill-only` instead: same interview, same reading, but it says
+what it would have written rather than writing it.
+
 Say which files you wrote, or say plainly that nothing met the bar. Both are real outcomes; a
 grilling that produces no ADR is not a grilling that failed.
 

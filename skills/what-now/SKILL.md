@@ -179,7 +179,7 @@ than you can follow and those decisions get made by an agent guessing, or do not
 
 ## Off the loop entirely
 
-Two skills sit outside the stages. Reach for them by name.
+Three skills sit outside the stages. Reach for them by name.
 
 **`wizard`** — for steps only a person can take: a dashboard with no API, a key only they can see,
 a billing decision. It generates an interactive bash script that opens the URL, captures each
@@ -188,6 +188,13 @@ value and verifies it. If an agent could just do the step, it should.
 **`writing-for-agents`** — for writing skills, `CLAUDE.md`, and the docs under `docs/agents/`.
 Its core rule: the description is paid every session, the body only when it fires, so put the
 trigger words in one and the detail in the other.
+
+**`grill-only`** — `grill` without the writing. Same interview, same reading of `docs/adr/` and
+`CONTEXT.md`, but no ADR and no glossary entry: it says what it would have written and leaves the
+repo alone. For a repo you are a guest in, or an idea too raw to be worth a number.
+
+Not for when writing the file feels like a commitment. That hesitation usually means the decision
+is real, and `grill` is the one you want.
 
 ## What this repo deliberately does not have
 

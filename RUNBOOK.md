@@ -71,7 +71,7 @@ later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs i
 For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
 `enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
-Eighteen skills, about 1,853 tokens always-on. A skill's full text is read only when it fires.
+Nineteen skills, about 1,930 tokens always-on. A skill's full text is read only when it fires.
 
 That always-on figure is the real cost of breadth: it was 959 with ten skills. Each description
 is roughly 100 tokens, paid every session. If a skill here is one you never reach for, disabling
@@ -131,7 +131,7 @@ the repo, never at the raw `marketplace.json`.
 ```json
 {
   "name": "kata",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "A rehearsed form for shipping. One loop, six stages, an agent at every step; every stage ends by writing something down, and the next stage starts by reading it.",
   "author": {
     "name": "Subir Mansukhani",
@@ -153,6 +153,7 @@ the repo, never at the raw `marketplace.json`.
     "./skills/setup-repo",
     "./skills/triage",
     "./skills/grill",
+    "./skills/grill-only",
     "./skills/shape-request",
     "./skills/research",
     "./skills/domain-modeling",
@@ -359,7 +360,7 @@ than you can follow and those decisions get made by an agent guessing, or do not
 
 ## Off the loop entirely
 
-Two skills sit outside the stages. Reach for them by name.
+Three skills sit outside the stages. Reach for them by name.
 
 **`wizard`** — for steps only a person can take: a dashboard with no API, a key only they can see,
 a billing decision. It generates an interactive bash script that opens the URL, captures each
@@ -368,6 +369,13 @@ value and verifies it. If an agent could just do the step, it should.
 **`writing-for-agents`** — for writing skills, `CLAUDE.md`, and the docs under `docs/agents/`.
 Its core rule: the description is paid every session, the body only when it fires, so put the
 trigger words in one and the detail in the other.
+
+**`grill-only`** — `grill` without the writing. Same interview, same reading of `docs/adr/` and
+`CONTEXT.md`, but no ADR and no glossary entry: it says what it would have written and leaves the
+repo alone. For a repo you are a guest in, or an idea too raw to be worth a number.
+
+Not for when writing the file feels like a commitment. That hesitation usually means the decision
+is real, and `grill` is the one you want.
 
 ## What this repo deliberately does not have
 
@@ -788,10 +796,53 @@ re-open it. A decision that only shapes this branch belongs in the branch, not i
 the next person re-argues the alternatives from scratch. The grilling is where those alternatives
 were named out loud - that is the one moment they are cheap to record.
 
+In a repo you do not own, use `grill-only` instead: same interview, same reading, but it says
+what it would have written rather than writing it.
+
 Say which files you wrote, or say plainly that nothing met the bar. Both are real outcomes; a
 grilling that produces no ADR is not a grilling that failed.
 
 Then hand it to `shape-request` to become a spec.
+````
+
+### `skills/grill-only/SKILL.md`
+
+````markdown
+---
+name: grill-only
+description: Grill a plan without writing anything to the repo - no ADRs, no glossary entries. Use in a repo you do not own.
+disable-model-invocation: true
+---
+
+Use the `grill` skill, with one change: skip **"Write the record as you go"** entirely. Write no
+files. Do not create an ADR, do not edit `CONTEXT.md`, do not hand anything to `domain-modeling`.
+
+**Still read the record.** The reading step stays. Grilling a plan without checking what the repo
+already decided is how you ask a generic question, and a generic question gets a generic answer.
+Reading writes nothing.
+
+## Instead of writing, say what you would have written
+
+At the end, in the chat and nowhere else:
+
+> **Would have written** `docs/adr/0008-refresh-tokens-are-single-use.md` &mdash; chosen: single-use,
+> rotated on every refresh. Rejected: long-lived with a revocation list, because the cache window
+> makes revocation take up to 60 seconds.
+
+Enough that somebody could paste it into a file, with the rejected option and its reason. An ADR
+that lists only what was chosen reads as arbitrary, and that is just as true when it lives in a
+chat window.
+
+Then say plainly that nothing was written, and that `grill` is the one that writes.
+
+## When this is the wrong skill
+
+You own the repo and the decision outlives the branch. Then a paragraph in a transcript is a worse
+outcome than a file, and `grill` is what you want. This skill exists for a repo you are a guest in,
+or an idea too raw to be worth a number in `docs/adr/`.
+
+Reaching for it because writing the file feels like a commitment is the case it is NOT for. That
+hesitation is usually the signal the decision is real.
 ````
 
 ### `skills/shape-request/SKILL.md`

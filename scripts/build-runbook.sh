@@ -94,7 +94,7 @@ later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs i
 For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
 `enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
-Eighteen skills, about 1,853 tokens always-on. A skill's full text is read only when it fires.
+Nineteen skills, about 1,930 tokens always-on. A skill's full text is read only when it fires.
 
 That always-on figure is the real cost of breadth: it was 959 with ten skills. Each description
 is roughly 100 tokens, paid every session. If a skill here is one you never reach for, disabling
@@ -131,9 +131,21 @@ cat <<'MID'
 
 MID
 
-for s in what-now setup-repo triage grill shape-request research domain-modeling codebase-design \
-         design-check prototype implement tdd scoped-review merge-conflicts land diagnose \
-         wizard writing-for-agents; do
+# Derived, not typed. This list was hardcoded and a nineteenth skill was added without it,
+# so the RUNBOOK shipped without that skill's body - the same drift that put three different
+# file counts in this repo. plugin.json's `skills` array is what actually ships; read that.
+SKILL_DIRS=$(python3 -c "import json;print(' '.join(s.split('/')[-1] for s in json.load(open('.claude-plugin/plugin.json'))['skills']))")
+
+# A skill directory that plugin.json does not list is invisible to users and would be invisible
+# here too. Fail the build rather than quietly omit it.
+for d in skills/*/; do
+  n=$(basename "$d")
+  case " $SKILL_DIRS " in *" $n "*) ;; *)
+    echo "build-runbook: skills/$n is not listed in plugin.json" >&2; exit 1 ;;
+  esac
+done
+
+for s in $SKILL_DIRS; do
   embed "skills/$s/SKILL.md" markdown
 done
 

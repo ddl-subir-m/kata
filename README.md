@@ -21,14 +21,14 @@ claude plugin marketplace add ddl-subir-m/kata
 claude plugin install kata@subir
 ```
 
-That is the whole install, once per machine. Eighteen skills, in every project.
+That is the whole install, once per machine. Nineteen skills, in every project.
 
 Already inside a Claude Code session? `/plugin marketplace add ddl-subir-m/kata` then
 `/plugin install kata@subir`.
 
 ## Then just ask for things
 
-There is no step two. You now have eighteen skills, and you use them by asking:
+There is no step two. You now have nineteen skills, and you use them by asking:
 
 > "triage the inbox"  ·  "implement #42"  ·  "review this"  ·  "what now?"
 
@@ -48,14 +48,15 @@ skills, so a teammate who clones it is offered the same install.
 
 </details>
 
-## The eighteen skills
+## The nineteen skills
 
 | Stage | Skill | What it does |
 | --- | --- | --- |
 | — | `what-now` | Ask which skill fits. A router over the others, and a map of the flow |
 | 00 | `setup-repo` | Wires the loop into any repo, new or old. Fills gaps, never overwrites |
 | 00/01 | `triage` | Works the issue inbox. Every open item gets a label it earns |
-| 01 | `grill` | Stress-tests a plan with hard questions, one at a time |
+| 01 | `grill` | Stress-tests a plan with hard questions, reading the ADRs first and writing what settles back out |
+| — | `grill-only` | The same interview, writing nothing. For a repo you are a guest in |
 | 01 | `shape-request` | One question at a time until the spec writes itself, then tickets |
 | 01 | `research` | Investigates against primary sources, leaves a cited Markdown file |
 | 01/02 | `domain-modeling` | `CONTEXT.md` entries and ADRs whose titles are the decision |
@@ -71,12 +72,13 @@ skills, so a teammate who clones it is offered the same install.
 | — | `wizard` | A bash wizard for the steps only a person can take |
 | — | `writing-for-agents` | Writing skills, `CLAUDE.md`, and the docs agents read |
 
-Eighteen skills, about 1,853 tokens always-on. A skill's full text is read only when it fires. The
+Nineteen skills, about 1,930 tokens always-on. A skill's full text is read only when it fires. The
 always-on figure is the real cost of breadth: it was 959 with ten skills. Each description is
-roughly 100 tokens, paid every session; `triage` added ~110, and `setup-repo` is the heaviest single skill at ~140. If a skill here is one you never
-reach for, disabling the plugin per repo is cheaper than carrying it — or fork the marketplace and
-trim the `skills` array in `plugin.json`. `what-now` costs just ~40 of that, because it never fires
-on its own.
+roughly 100 tokens, paid every session; `triage` added ~110, and `grill` is now the heaviest single
+skill at ~145, having grown when it learned to read the ADRs and write them. If a skill here is one
+you never reach for, disabling the plugin per repo is cheaper than carrying it — or fork the
+marketplace and trim the `skills` array in `plugin.json`. `what-now` and `grill-only` cost just ~40
+each, because neither fires on its own and both keep their descriptions short on purpose.
 
 ## Not sure which skill you want?
 
