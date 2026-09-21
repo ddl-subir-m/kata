@@ -165,11 +165,18 @@ Installed from the `kata` plugin. One per stage:
 | --- | --- |
 | Not sure which applies | `what-now` (a router; ask for it by name) |
 | 00 Scaffold a repo like this one | `new-repo` |
+| 01 Stress-test the thinking first | `grill` |
 | 01 Shape a request into a spec and tickets | `shape-request` |
+| 01 Read the primary sources, leave a cited file | `research` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |
+| 02 Module shape, seams, what to hide | `codebase-design` |
 | 02 Check a screen before anyone opens it | `design-check` |
+| 02 Answer a design question with throwaway code | `prototype` |
 | 03 Build one ticket, reviewed and committed but not landed | `implement` |
 | 04 Write the test first; prove the guard is armed | `tdd` |
 | 05 Review only the changed paths | `scoped-review` |
+| 05 Finish a stopped merge or rebase | `merge-conflicts` |
 | 05 Merge main, prove the tested tree is the landing tree | `land` |
 | 06 Work out what broke and hand back a diagnosis | `diagnose` |
+| — Steps only a person can take | `wizard` |
+| — Writing skills and standing rules | `writing-for-agents` |

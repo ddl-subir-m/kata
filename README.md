@@ -63,7 +63,12 @@ for your teammates.
 there or the plugin reports as not installed. `claude plugin marketplace add --scope project`
 writes both keys; the interactive path may leave the marketplace registered only for you.
 
-Ten skills, about 959 tokens always-on. A skill's full text is read only when it fires.
+Seventeen skills, about 1,737 tokens always-on. A skill's full text is read only when it fires.
+
+That always-on figure is the real cost of breadth: it was 959 with ten skills. Each description
+is roughly 100 tokens, paid every session. If a skill here is one you never reach for, disabling
+the plugin per repo is cheaper than carrying it — or fork the marketplace and trim the `skills`
+array in `plugin.json`.
 
 `what-now` costs just ~40 of that, because it never fires on its own — it is invoked by name.
 
@@ -106,14 +111,21 @@ everywhere. `claude plugin list` shows the scope of each, and flags any key set 
 | --- | --- | --- |
 | — | `what-now` | Ask which skill fits. A router over the others, and a map of the flow |
 | 00 | `new-repo` | Scaffolds a new repo from the installed plugin. No clone needed |
-| 01 | `shape-request` | One question at a time until the spec writes itself, then tickets with dependencies |
+| 01 | `grill` | Stress-tests a plan with hard questions, one at a time |
+| 01 | `shape-request` | One question at a time until the spec writes itself, then tickets |
+| 01 | `research` | Investigates against primary sources, leaves a cited Markdown file |
 | 01/02 | `domain-modeling` | `CONTEXT.md` entries and ADRs whose titles are the decision |
-| 02 | `design-check` | Checks a screen against this repo's design system before anyone opens it |
-| 03 | `implement` | Takes one ticket, drives tdd, reviews, commits. Never pushes, never lands |
-| 04 | `tdd` | Red-green-refactor, and one deliberate failure plant per guard condition |
-| 05 | `scoped-review` | Review the changed paths only. Never the whole repo, never the full suite |
+| 02 | `codebase-design` | Deep modules, seams, and where to hide complexity |
+| 02 | `design-check` | Checks a screen against this repo's own design system |
+| 02 | `prototype` | Throwaway build to answer one design question |
+| 03 | `implement` | Takes one ticket, drives tdd, reviews, commits. Never pushes |
+| 04 | `tdd` | Red-green-refactor, and one failure plant per guard condition |
+| 05 | `scoped-review` | Review the changed paths only. Never the whole repo |
+| 05 | `merge-conflicts` | Resolves an in-progress merge by intent, never `--abort` |
 | 05 | `land` | Merge main before the suite, then prove the tested tree is the landing tree |
-| 06 | `diagnose` | Reproduce, bisect the condition, hand back a root cause and a rejected fix |
+| 06 | `diagnose` | Reproduce, bisect the condition, hand back a root cause |
+| — | `wizard` | A bash wizard for the steps only a person can take |
+| — | `writing-for-agents` | Writing skills, `CLAUDE.md`, and the docs agents read |
 
 ## Not sure which skill you want?
 

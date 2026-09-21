@@ -25,7 +25,14 @@ Already set up → skip to stage 01.
 
 ## Stage 01: shape the request
 
-**`shape-request`** — one question at a time, covering scope, users, constraints and success. It
+**`shape-request`** — one question at a time, covering scope, users, constraints and success.
+
+**`grill`** when the idea is not ready to be shaped yet. It stress-tests the thinking: works the
+frontier, names the weakest point, and never chooses for you. Reach for it when something sounds
+right but nobody has pushed on it.
+
+**`research`** when the blocker is a fact rather than a decision. It reads the primary sources and
+leaves a cited Markdown file in the repo. A search snippet is not a source. It
 ends with a spec published as an issue, broken into tickets that declare what blocks them.
 
 ### Branch: does this request even need shaping?
@@ -47,6 +54,12 @@ problem: a fuzzy term, one word doing three jobs, a decision worth recording.
 The reason a vocabulary rots is that somebody meant to write it down later.
 
 ## Stage 02: design
+
+**`codebase-design`** for the shape of a module: depth, seams, what to hide, where a test can
+observe behaviour without mocks. Reach for it when the argument is about interfaces.
+
+**`prototype`** when a design question needs a **runnable** answer rather than an argument. Name
+the question in one sentence first; a prototype that answers no question is unreviewed code.
 
 **`design-check`** — checks a screen against the repo's own design system **before anyone opens
 it**. UX rules get applied while the work is written, not caught in review.
@@ -87,6 +100,9 @@ unscoped review costs roughly 13 minutes of model turns and finds no more.
 
 Stop if the change touches more than 40 files: report the count, group them, ask which group
 first.
+
+**`merge-conflicts`** if the merge stops. Resolve by intent, hunk by hunk, never by taking a side
+wholesale. Never `--abort` on your own initiative.
 
 **`land`** — merge `main` **before** the suite, then prove the tested tree is the landing tree:
 
@@ -142,15 +158,24 @@ Work runs in parallel across separate worktrees, one per ticket. **Cap how wide 
 you can keep up with.** Builds constantly surface decisions only a person should make; run wider
 than you can follow and those decisions get made by an agent guessing, or do not get made at all.
 
+## Off the loop entirely
+
+Two skills sit outside the stages. Reach for them by name.
+
+**`wizard`** — for steps only a person can take: a dashboard with no API, a key only they can see,
+a billing decision. It generates an interactive bash script that opens the URL, captures each
+value and verifies it. If an agent could just do the step, it should.
+
+**`writing-for-agents`** — for writing skills, `CLAUDE.md`, and the docs under `docs/agents/`.
+Its core rule: the description is paid every session, the body only when it fires, so put the
+trigger words in one and the detail in the other.
+
 ## What this repo deliberately does not have
 
 Say so rather than improvising a substitute:
 
-- **No post-deploy canary** and **no weekly retrospective.** Both belong in stage 06. `diagnose`
-  is the shape to copy if you want them.
-- **No prototype skill.** When a design question needs a runnable answer, write throwaway code and
-  fold the answer back in.
-- **No research skill.** Read the primary sources and cite them.
+- **No post-deploy canary** and **no weekly retrospective.** Both belong in stage 06, and
+  `diagnose` is the shape to copy.
 - **No handoff format.** Sessions coordinate through the ticket, which is the mailbox.
 
 ## Precondition

@@ -71,7 +71,12 @@ later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs i
 For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
 `enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
-Ten skills, about 959 tokens always-on. A skill's full text is read only when it fires.
+Seventeen skills, about 1,737 tokens always-on. A skill's full text is read only when it fires.
+
+That always-on figure is the real cost of breadth: it was 959 with ten skills. Each description
+is roughly 100 tokens, paid every session. If a skill here is one you never reach for, disabling
+the plugin per repo is cheaper than carrying it — or fork the marketplace and trim the `skills`
+array in `plugin.json`.
 
 One of them, `what-now`, is a router you invoke by name when you cannot remember which skill
 fits. It carries `disable-model-invocation: true`, so it never fires on its own and costs only
@@ -126,7 +131,7 @@ the repo, never at the raw `marketplace.json`.
 ```json
 {
   "name": "kata",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "A rehearsed form for shipping. One loop, six stages, an agent at every step; every stage ends by writing something down, and the next stage starts by reading it.",
   "author": {
     "name": "Subir Mansukhani",
@@ -146,14 +151,21 @@ the repo, never at the raw `marketplace.json`.
   "skills": [
     "./skills/what-now",
     "./skills/new-repo",
+    "./skills/grill",
     "./skills/shape-request",
+    "./skills/research",
     "./skills/domain-modeling",
+    "./skills/codebase-design",
     "./skills/design-check",
+    "./skills/prototype",
     "./skills/implement",
     "./skills/tdd",
     "./skills/scoped-review",
+    "./skills/merge-conflicts",
     "./skills/land",
-    "./skills/diagnose"
+    "./skills/diagnose",
+    "./skills/wizard",
+    "./skills/writing-for-agents"
   ]
 }
 ```
@@ -192,7 +204,14 @@ Already set up → skip to stage 01.
 
 ## Stage 01: shape the request
 
-**`shape-request`** — one question at a time, covering scope, users, constraints and success. It
+**`shape-request`** — one question at a time, covering scope, users, constraints and success.
+
+**`grill`** when the idea is not ready to be shaped yet. It stress-tests the thinking: works the
+frontier, names the weakest point, and never chooses for you. Reach for it when something sounds
+right but nobody has pushed on it.
+
+**`research`** when the blocker is a fact rather than a decision. It reads the primary sources and
+leaves a cited Markdown file in the repo. A search snippet is not a source. It
 ends with a spec published as an issue, broken into tickets that declare what blocks them.
 
 ### Branch: does this request even need shaping?
@@ -214,6 +233,12 @@ problem: a fuzzy term, one word doing three jobs, a decision worth recording.
 The reason a vocabulary rots is that somebody meant to write it down later.
 
 ## Stage 02: design
+
+**`codebase-design`** for the shape of a module: depth, seams, what to hide, where a test can
+observe behaviour without mocks. Reach for it when the argument is about interfaces.
+
+**`prototype`** when a design question needs a **runnable** answer rather than an argument. Name
+the question in one sentence first; a prototype that answers no question is unreviewed code.
 
 **`design-check`** — checks a screen against the repo's own design system **before anyone opens
 it**. UX rules get applied while the work is written, not caught in review.
@@ -254,6 +279,9 @@ unscoped review costs roughly 13 minutes of model turns and finds no more.
 
 Stop if the change touches more than 40 files: report the count, group them, ask which group
 first.
+
+**`merge-conflicts`** if the merge stops. Resolve by intent, hunk by hunk, never by taking a side
+wholesale. Never `--abort` on your own initiative.
 
 **`land`** — merge `main` **before** the suite, then prove the tested tree is the landing tree:
 
@@ -309,15 +337,24 @@ Work runs in parallel across separate worktrees, one per ticket. **Cap how wide 
 you can keep up with.** Builds constantly surface decisions only a person should make; run wider
 than you can follow and those decisions get made by an agent guessing, or do not get made at all.
 
+## Off the loop entirely
+
+Two skills sit outside the stages. Reach for them by name.
+
+**`wizard`** — for steps only a person can take: a dashboard with no API, a key only they can see,
+a billing decision. It generates an interactive bash script that opens the URL, captures each
+value and verifies it. If an agent could just do the step, it should.
+
+**`writing-for-agents`** — for writing skills, `CLAUDE.md`, and the docs under `docs/agents/`.
+Its core rule: the description is paid every session, the body only when it fires, so put the
+trigger words in one and the detail in the other.
+
 ## What this repo deliberately does not have
 
 Say so rather than improvising a substitute:
 
-- **No post-deploy canary** and **no weekly retrospective.** Both belong in stage 06. `diagnose`
-  is the shape to copy if you want them.
-- **No prototype skill.** When a design question needs a runnable answer, write throwaway code and
-  fold the answer back in.
-- **No research skill.** Read the primary sources and cite them.
+- **No post-deploy canary** and **no weekly retrospective.** Both belong in stage 06, and
+  `diagnose` is the shape to copy.
 - **No handoff format.** Sessions coordinate through the ticket, which is the mailbox.
 
 ## Precondition
@@ -456,6 +493,67 @@ Say plainly:
 The last two are the ones worth reading. The rest is bookkeeping.
 ````
 
+### `skills/grill/SKILL.md`
+
+````markdown
+---
+name: grill
+description: Stress-test a plan, a decision or an idea with hard questions, one at a time. Use when thinking needs pressure-testing before it becomes work, or when something sounds right but has not been challenged. Triggers - "grill me", "poke holes in this", "stress-test this plan", "what am I missing", "challenge this".
+---
+
+# Grill
+
+Relentless interview. The goal is to find what breaks the idea, before code does.
+
+**The facts are your job. The decisions are theirs.** You do the digging; you never choose.
+
+## One question at a time
+
+Never a numbered list. Ask, wait, then let the answer pick the next question. A batch of six
+forces a person to answer the wrong five.
+
+## Work the frontier
+
+The frontier is the edge of what has actually been settled. Each round, aim at the weakest thing
+that is being treated as settled.
+
+    Round 1  →  the claim everything else rests on
+    Round 2  →  whatever that answer just exposed
+    Round 3  →  the thing they keep restating instead of answering
+
+If an answer restates the plan rather than defending it, that is the frontier. Stay there.
+
+## The questions that earn their place
+
+| Ask | Because |
+| --- | --- |
+| "What would have to be true for this to be wrong?" | Turns a belief into something checkable |
+| "Who hits this, and what are they doing when they do?" | Vague users hide vague requirements |
+| "What are you NOT doing, and why is that safe?" | Scope is defined by its edges |
+| "What is the number that says this worked?" | No number means no finish line |
+| "What did you try that did not work?" | Finds the constraint nobody wrote down |
+| "If this ships and something breaks, what breaks first?" | Cheapest failure analysis there is |
+
+## Stop pretending to be neutral
+
+If you can see the flaw, name it. A grilling that only asks questions while knowing the answer
+wastes the person's time.
+
+> "You are assuming a revocation takes effect immediately. It cannot, if the check is cached for
+> 60 seconds. Which one are you giving up?"
+
+## Know when to stop
+
+Stop when the next question would be invented rather than found. Then summarise:
+
+- **What is settled**, in their words not yours.
+- **What is still open**, as questions.
+- **What you think is the weakest point**, said plainly, once.
+
+Then hand it to `shape-request` to become a spec, or `domain-modeling` if what settled was a word
+or a decision rather than a plan.
+````
+
 ### `skills/shape-request/SKILL.md`
 
 ````markdown
@@ -572,6 +670,60 @@ Give the person: the spec issue number, the ticket numbers in dependency order, 
 you could not answer. Say plainly which of the four areas is still thin.
 ````
 
+### `skills/research/SKILL.md`
+
+````markdown
+---
+name: research
+description: Investigate a question against primary sources and leave the findings as a cited Markdown file in the repo. Use when a topic needs reading legwork, when API or library facts must be gathered, or when a claim needs checking against the thing that owns it. Triggers - "research this", "look into", "what does the API actually support", "check the docs on".
+---
+
+# Research
+
+Delegate the reading to a background agent, so you keep working while it reads.
+
+## The job you hand it
+
+1. **Investigate against primary sources.** Official docs, the source code, the spec, the
+   first-party API. Not a blog post about them. Follow every claim back to the thing that owns it.
+2. **Write the findings to one Markdown file**, citing each claim's source with a link.
+3. **Save it where the repo already keeps such notes.** Match the existing convention. If there is
+   none, pick somewhere sensible and say where.
+
+## A search result is not a source
+
+This is the rule that does the work. A search snippet, an answer summary, or a model's memory of
+an API is **not** a citation. Open the page. Read the section. Link to it.
+
+> Bad: "The dependencies API takes the issue number."
+> Good: "The dependencies API takes the numeric database id, not the `#number` or the `node_id`
+> — [docs.github.com/.../dependencies](https://docs.github.com/), read 2026-09-20."
+
+The second one survives being wrong, because the next reader can check it. The first one becomes
+folklore.
+
+## What the file must carry
+
+- **The question**, as asked.
+- **The answer**, first, in a sentence or two. Not a chronology of what you read.
+- **Each claim with its link**, and the date you read it.
+- **What you could not determine.** An open question written down is worth more than a confident
+  guess, because it tells the next person where to start.
+
+## Say what you could not verify
+
+If the docs do not answer it, say so plainly rather than reasoning to a plausible answer. "The
+page does not say, and I could not find it elsewhere" is a real finding.
+
+If a claim held only under a version, say which. A fact with no version is a fact with an
+expiry date and no label on it.
+
+## Where it goes next
+
+Research feeds thinking rather than replacing it. The file is material you take **into**
+`shape-request` or `domain-modeling`, not a decision on its own.
+````
+
 ### `skills/domain-modeling/SKILL.md`
 
 ````markdown
@@ -685,6 +837,92 @@ If what you are writing contradicts an existing ADR, say so:
 Then let the person decide. A superseded ADR gets its `Status` line updated; it is never deleted.
 ````
 
+### `skills/codebase-design/SKILL.md`
+
+````markdown
+---
+name: codebase-design
+description: Shared vocabulary for designing deep modules and choosing where a seam goes. Use when designing or improving a module's interface, deciding what to hide, making code more testable, or when another skill needs the deep-module vocabulary. Triggers - "design this module", "where should the seam go", "is this interface right", "make this testable".
+---
+
+# Codebase design
+
+The vocabulary for talking about a module's **shape**, so two people arguing about a design are at
+least arguing about the same thing.
+
+## Glossary
+
+| Term | Meaning |
+| --- | --- |
+| **Module** | A unit that hides something. Not a file, not a folder — a thing with an inside |
+| **Interface** | What a caller must know to use it. Names, types, ordering rules, error cases, and every fact the docs force you to learn |
+| **Depth** | Behaviour hidden, divided by interface exposed. High is good |
+| **Seam** | A public boundary where behaviour can be observed without reaching inside. Tests live here |
+| **Adapter** | A thin module whose only job is to make one interface look like another |
+| **Leverage** | How much a caller gets per unit of what they must know |
+| **Locality** | Whether a change lands in one place or is spread across many |
+
+## Deep versus shallow
+
+**Deep**: a lot of behaviour behind a small interface.
+
+    resolve_binding(conversation_id, table_name) -> Binding | Unbound
+
+Behind it: permission check, catalog lookup, cache, error mapping. The caller learns one function
+and two return shapes.
+
+**Shallow**: nearly as much interface as behaviour. The classic tell is a wrapper that adds a
+name and nothing else.
+
+    def get_binding_row(cid, tname):
+        return db.query(BINDING_SQL, cid, tname)
+
+A caller still needs to know about rows, and about what happens when there is none. The module
+bought them nothing, and now there are two things to read instead of one.
+
+**The test:** if explaining the module takes longer than explaining what it does, it is shallow.
+
+## Principles
+
+1. **Depth beats decomposition.** Two shallow modules are worse than one deep one. Splitting a
+   file is not designing.
+2. **Push complexity down, not out.** If something is hard, the module absorbs it. Making the
+   caller handle it is how a codebase becomes unreadable.
+3. **The common case needs no configuration.** Defaults that are right for most callers, and an
+   escape hatch for the rest.
+4. **Errors that cannot happen do not need handling.** Define them out of existence where you can:
+   a function that cannot fail is deeper than one that returns a result type.
+5. **Design it twice.** Sketch a second interface you do not intend to use. The comparison is what
+   shows you what the first one costs. This takes ten minutes and is skipped almost every time.
+
+## Designing for testability
+
+A module is testable when its seam is observable **without mocks**.
+
+> Hard to test: `sync()` reads the clock, calls the network, writes the DB, returns `None`.
+> Easy to test: `plan_sync(state, now) -> [Action]` is pure, and `apply(actions)` does the IO.
+
+The seam moved to a value you can assert on. Nothing was mocked, and the test survives a refactor
+of either half.
+
+Ask, before writing a test: **what would I have to mock?** Each answer names a place the design is
+leaking.
+
+## Rejected framings
+
+- **"Small functions are good."** Only if each hides something. Ten three-line functions with no
+  secret between them is one function with nine extra names to learn.
+- **"Split by layer."** Controller, service, repository is a filing scheme, not a design. A change
+  to one behaviour touches all three, which is the opposite of locality.
+- **"Make it flexible for later."** Flexibility nobody asked for is interface you pay for now
+  against a caller who may never exist.
+
+## When you change a module's shape
+
+Read the neighbours of the line you change. A module's depth is a property of the whole surface,
+so a new parameter is a change to every caller's interface even when they do not pass it.
+````
+
 ### `skills/design-check/SKILL.md`
 
 ````markdown
@@ -790,6 +1028,77 @@ navigation.
 
 Note the shape: severity, the file and line, the condition that triggers it, what the person
 cannot do, and the specific fix. A finding without the condition is an opinion.
+````
+
+### `skills/prototype/SKILL.md`
+
+````markdown
+---
+name: prototype
+description: Build a throwaway prototype to answer one design question. Use when a question needs a runnable answer rather than an argument - whether a state model holds up, whether a flow feels right, what a screen should look like. Triggers - "prototype this", "let's try it and see", "would this state model work", "what should this screen look like".
+---
+
+# Prototype
+
+A detour off the main loop. You are here because a question **cannot be settled on paper** and
+needs code you can run.
+
+## First, name the question
+
+One sentence, written down before any code. If you cannot write it, you do not need a prototype —
+you need `grill`.
+
+> "Can one conversation hold bindings to two tables without the query builder becoming ambiguous?"
+
+A prototype that answers no question is just unreviewed code. This is the step that makes the
+difference.
+
+## It is throwaway. Mean it.
+
+| Rule | Why |
+| --- | --- |
+| Its own directory, outside the repo's source tree | So nobody imports it by accident |
+| No tests | You are not shipping it; the answer is the deliverable |
+| No error handling | Impossible states are fine here |
+| Hardcode everything | Config is a distraction from the question |
+| Delete it when the question is answered | Or move it to `spikes/`, clearly marked |
+
+If you find yourself making it robust, stop. You have started building the real thing in the wrong
+place.
+
+## Two kinds
+
+### Logic
+
+The question is about **state, rules or data shape**. Write the smallest program that exercises
+the model and print the states it reaches.
+
+> Question: does a binding survive a conversation being renamed?
+> Prototype: a dict of bindings, a rename function, and six `print()` calls showing before/after.
+> Twenty lines. Answered in ten minutes.
+
+### UI
+
+The question is about **what a person sees**. Build one screen with fake data. No routing, no
+state management, no backend.
+
+Check it against `docs/design-system.md` only if the question is about the design. If the question
+is "does this flow make sense", ignore the styling entirely.
+
+## Fold the answer back
+
+The prototype is not the output. **The answer is.** Hand back:
+
+- the question, as you wrote it at the start,
+- the answer, in one or two sentences,
+- what surprised you,
+- what the prototype does **not** tell you.
+
+That last one matters. A prototype with hardcoded data says nothing about behaviour at 50,000
+rows, and saying so stops somebody treating it as proof.
+
+If the answer settles a decision, write it up with `domain-modeling` as an ADR. That is where it
+becomes durable; the prototype directory is not.
 ````
 
 ### `skills/implement/SKILL.md`
@@ -1091,6 +1400,82 @@ Findings first, most severe first. Then, plainly:
 Work left undone belongs in the report, not in a new issue.
 ````
 
+### `skills/merge-conflicts/SKILL.md`
+
+````markdown
+---
+name: merge-conflicts
+description: Resolve an in-progress git merge or rebase, hunk by hunk, by intent rather than by picking lines. Use when a merge or rebase has stopped with conflicts. Triggers - "resolve the conflicts", "fix this merge", "the rebase is stuck", "CONFLICT".
+---
+
+# Resolving merge conflicts
+
+You are here because an operation is **in progress and stopped**. Your job is to finish it.
+
+## 1. See where you actually are
+
+    git status
+    git diff --name-only --diff-filter=U
+
+Merge and rebase invert the meaning of the sides, and getting this backwards silently keeps the
+wrong code:
+
+| | `--ours` | `--theirs` |
+| --- | --- | --- |
+| **merge** | the branch you are on | the branch being merged in |
+| **rebase** | the branch being replayed **onto** | your commits being replayed |
+
+In a rebase, "ours" is the upstream. Read the table, do not trust the habit.
+
+## 2. Never `--abort` on your own initiative
+
+Aborting throws away the operation and any resolution already done, and it is a decision for the
+person, not for you. If you believe aborting is right, **say so and stop**.
+
+## 3. Resolve by intent, not by picking a side
+
+For each conflicting hunk, find out what each side was **trying to do** before deciding what the
+merged code should say.
+
+    git log --oneline -3 <side>            # what was that branch doing
+    git log -p -1 <sha> -- <path>          # the change, with its message
+
+Then write the code that satisfies both intents. Often that is neither side verbatim.
+
+> Their side renamed `attach_table` to `create_binding`. Your side added a second caller of
+> `attach_table`. Taking either side gives you broken code: one loses the rename, the other loses
+> the caller. The resolution is your new caller, calling the new name.
+
+**Taking a side wholesale is the failure mode here.** It compiles, it looks resolved, and it
+silently drops one side's work.
+
+## 4. Watch for the conflicts git does not report
+
+A conflict is only raised when two sides touch the same lines. The dangerous case is a clean merge
+that is still broken:
+
+> They gave a helper a second required argument. You added a call to it, in another file. Nothing
+> collides, the merge is clean, and the result does not run.
+
+After resolving, **build and run the tests**, not just the conflicted files. A clean `git status`
+is not evidence.
+
+## 5. Finish the operation
+
+    git add <resolved paths>
+    git merge --continue     # or: git rebase --continue
+
+Leaving the repo mid-merge is worse than either outcome, because the next session cannot tell a
+paused operation from a broken one.
+
+## 6. Report
+
+- Which files conflicted, and how many hunks.
+- For each non-obvious resolution, **what the two intents were** and what you wrote instead.
+- Whether the tests ran, and what they said.
+- Anything you resolved with low confidence. Name it rather than hoping.
+````
+
 ### `skills/land/SKILL.md`
 
 ````markdown
@@ -1297,6 +1682,177 @@ A diagnosis, not a fix applied to production:
 - **What you could not determine.**
 
 The person decides what to do with it. Their decision starts the loop again at stage 01.
+````
+
+### `skills/wizard/SKILL.md`
+
+````markdown
+---
+name: wizard
+description: Generate an interactive bash wizard that walks a person through steps only they can perform. Use when provisioning infrastructure, setting up credentials or CI secrets, clicking through an unfamiliar third-party dashboard, or running a one-off migration or cutover. Triggers - "set up the credentials", "walk me through provisioning", "I need to configure this by hand".
+---
+
+# Wizard
+
+For the steps **only a person can take**: clicking through a dashboard, accepting terms, pasting a
+key that only they can see, approving a billing change.
+
+## First: could you just do it?
+
+If you can do the step yourself, do it. A wizard for something an agent can perform is pure
+ceremony.
+
+Reach for this only where the human is genuinely in the loop — an auth wall, a physical device, a
+decision with money attached, a console with no API.
+
+## What the wizard is
+
+One bash script that:
+
+1. **Opens the right URL** at the right moment, so nobody hunts through a console.
+2. **Explains the step in one line** before asking for anything.
+3. **Captures each value** as the person produces it.
+4. **Writes the values where they belong** — `.env`, `gh secret set`, a config file.
+5. **Verifies** what it captured, so a typo fails here rather than in CI a day later.
+
+The point is that the procedure stops being something you re-explain to an agent every time.
+
+## The shape
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+step() { printf '\n\033[1m%s\033[0m\n' "$1"; }
+ask()  { local v; read -r -p "  $1: " v; printf '%s' "$v"; }
+
+step "1/3  Create an API token"
+echo "  Opening the tokens page. Create one with the 'read:packages' scope."
+open "https://example.com/settings/tokens"   # xdg-open on Linux
+TOKEN=$(ask "Paste the token")
+
+step "2/3  Verify it works"
+if ! curl -sf -H "Authorization: Bearer $TOKEN" https://example.com/api/me >/dev/null; then
+  echo "  That token was rejected. Check the scope and run this again." >&2
+  exit 1
+fi
+echo "  OK."
+
+step "3/3  Store it"
+gh secret set EXAMPLE_TOKEN --body "$TOKEN"
+printf 'EXAMPLE_TOKEN=%s\n' "$TOKEN" >> .env
+echo "  Written to GitHub secrets and .env"
+```
+
+## Rules
+
+| Rule | Why |
+| --- | --- |
+| Verify every captured value before storing it | A wrong secret fails in CI tomorrow, with no clue where it came from |
+| One step per screen, numbered `1/3` | The person knows how much is left |
+| Never echo a secret back | It lands in scrollback and logs |
+| Idempotent where possible | Re-running after a failure should be safe, and say so at the top |
+| `set -euo pipefail` | A half-configured system is worse than an unconfigured one |
+| Say what it will change, before it changes it | Consent, and a chance to stop |
+
+**Do not use `[ x ] && y` under `set -e`.** The compound returns non-zero when the test is false
+and kills the script. Use `if ... then ... fi`. This is measured, not theoretical — it produced a
+silent partial run in this very repo.
+
+## Hand back
+
+The script path, what it will touch, and what the person needs in hand before starting: an
+account, a role, a card, a device.
+
+If any step cannot be verified programmatically, say which, so nobody assumes a green run means a
+working setup.
+````
+
+### `skills/writing-for-agents/SKILL.md`
+
+````markdown
+---
+name: writing-for-agents
+description: Write documents that agents read - skills, CLAUDE.md, AGENTS.md, and the docs under docs/agents. Use when creating or editing a skill, or changing the standing instructions. Triggers - "write a skill", "edit CLAUDE.md", "add a rule", "document this for the agent".
+---
+
+# Writing for agents
+
+A document an agent reads is not documentation. It is **instructions that compete for attention**
+with everything else in the window.
+
+## Two loads
+
+Every line you write costs one of two things:
+
+- **Always-on**: the frontmatter description of a skill, and all of `CLAUDE.md`. Paid every
+  session, every turn. Roughly 100 tokens per skill description.
+- **On-invoke**: the skill body. Paid only when it fires, and typically 1.5k.
+
+So: **put the trigger words in the description and the detail in the body.** A body that is twice
+as long costs nothing until it is needed. A description that is twice as long is a tax on every
+session forever.
+
+Check the real numbers rather than guessing:
+
+    claude plugin details <plugin>
+
+## Information hierarchy
+
+Lead with the thing that changes what the reader does. Not context, not history.
+
+> Bad: "Merging is an important part of the workflow. There are several considerations…"
+> Good: "Merge `main` BEFORE the suite, never after. A green run only describes the code it ran
+> against."
+
+An agent that reads only your first sentence should still behave correctly.
+
+## Steps need completion criteria
+
+"Review the code" is not a step. A step says how you know it is finished.
+
+> "Run the review. Stop if more than 40 files changed: report the count, group them, ask which
+> group first."
+
+Strong criteria let a session loop on its own. Weak criteria produce a check-in every two minutes.
+
+## Give every rule an example
+
+A rule with no example gets read as a slogan and ignored. One short, concrete case is worth three
+paragraphs of principle.
+
+> Rule: fix the code, not the test.
+> Example: not allowed — changing `assert p95 < 90` to `assert p95 < 200` because it got slower.
+
+## Say what NOT to do, and why
+
+The failure mode is more memorable than the rule, and it is what the reader will recognise when
+they are in it.
+
+> "`-path '*subir*'` matches every path under `/Users/subirmansukhani`, which is all of them."
+
+## Leading words
+
+Front-load the operative word so a scanning reader catches it: **Never**, **Always**, **Stop if**,
+**Before you**. Bury it mid-sentence and it is gone.
+
+## When to split
+
+Split when a document serves two different moments. One skill per moment the person is in, not one
+per topic.
+
+Do **not** split to make files shorter. Two shallow skills are worse than one deep one — the
+reader now has to know which to reach for, which is interface they did not have before.
+
+## Pruning
+
+`CLAUDE.md` grows by one line each time a mistake happens **twice**. Not once, and not in advance.
+
+Delete a rule when the condition that produced it is gone, and say so. A file of rules nobody can
+trace to a real failure gets skimmed, and then the one rule that matters gets skimmed with it.
+
+**The test for any line you add:** can you name the incident? If not, it is a guess, and it is
+costing every session from now on.
 ````
 
 ---
@@ -1575,14 +2131,21 @@ Installed from the `kata` plugin. One per stage:
 | --- | --- |
 | Not sure which applies | `what-now` (a router; ask for it by name) |
 | 00 Scaffold a repo like this one | `new-repo` |
+| 01 Stress-test the thinking first | `grill` |
 | 01 Shape a request into a spec and tickets | `shape-request` |
+| 01 Read the primary sources, leave a cited file | `research` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |
+| 02 Module shape, seams, what to hide | `codebase-design` |
 | 02 Check a screen before anyone opens it | `design-check` |
+| 02 Answer a design question with throwaway code | `prototype` |
 | 03 Build one ticket, reviewed and committed but not landed | `implement` |
 | 04 Write the test first; prove the guard is armed | `tdd` |
 | 05 Review only the changed paths | `scoped-review` |
+| 05 Finish a stopped merge or rebase | `merge-conflicts` |
 | 05 Merge main, prove the tested tree is the landing tree | `land` |
 | 06 Work out what broke and hand back a diagnosis | `diagnose` |
+| — Steps only a person can take | `wizard` |
+| — Writing skills and standing rules | `writing-for-agents` |
 ````
 
 ### `template/CONTEXT.md`
