@@ -80,3 +80,32 @@ single highest-value paragraph in most issues here.
     table has five other columns.
 
 Five short sections. "Rejected" is there for the same reason it is in an ADR.
+
+## Pull requests as a request surface
+
+**PRs as a request surface: no.**
+
+_Set this to `yes` if this repo treats external PRs as feature requests. The `triage` skill reads
+this line and stops at it when the answer is `no`._
+
+When `yes`, PRs run the same labels and the same four triage questions as issues, with the `gh pr`
+verbs:
+
+- **Read**: `gh pr view <number> --comments`, and `gh pr diff <number>` for the diff.
+- **List for triage**: keep only outside contributors —
+
+      gh pr list --state open --json number,title,body,labels,author,authorAssociation \
+        --jq '[.[] | select(.authorAssociation | IN("CONTRIBUTOR","FIRST_TIME_CONTRIBUTOR","NONE"))]'
+
+  Dropping `OWNER`, `MEMBER` and `COLLABORATOR` is what keeps your own team's branches out of the
+  intake queue.
+- **Comment / label / close**: `gh pr comment`, `gh pr edit --add-label` / `--remove-label`,
+  `gh pr close`.
+
+**GitHub shares one number space across issues and PRs**, so a bare `#42` may be either. Resolve
+it rather than assuming:
+
+    gh pr view 42 >/dev/null 2>&1 && echo "PR" || echo "issue"
+
+Guessing wrong is quiet: `gh issue view 42` on a number that is really a PR does not error on
+every GitHub version, and you end up reading a body that belongs to something else.

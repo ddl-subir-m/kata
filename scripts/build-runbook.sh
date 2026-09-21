@@ -94,7 +94,7 @@ later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs i
 For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
 `enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
-Seventeen skills, about 1,737 tokens always-on. A skill's full text is read only when it fires.
+Eighteen skills, about 1,843 tokens always-on. A skill's full text is read only when it fires.
 
 That always-on figure is the real cost of breadth: it was 959 with ten skills. Each description
 is roughly 100 tokens, paid every session. If a skill here is one you never reach for, disabling
@@ -131,7 +131,7 @@ cat <<'MID'
 
 MID
 
-for s in what-now new-repo grill shape-request research domain-modeling codebase-design \
+for s in what-now new-repo triage grill shape-request research domain-modeling codebase-design \
          design-check prototype implement tdd scoped-review merge-conflicts land diagnose \
          wizard writing-for-agents; do
   embed "skills/$s/SKILL.md" markdown

@@ -1,6 +1,6 @@
 {
   "name": "kata",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "A rehearsed form for shipping. One loop, six stages, an agent at every step; every stage ends by writing something down, and the next stage starts by reading it.",
   "author": {
     "name": "Subir Mansukhani",
@@ -20,6 +20,7 @@
   "skills": [
     "./skills/what-now",
     "./skills/new-repo",
+    "./skills/triage",
     "./skills/grill",
     "./skills/shape-request",
     "./skills/research",

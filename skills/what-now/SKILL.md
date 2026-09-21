@@ -23,6 +23,18 @@ else; the rest of the loop assumes those files exist.
 
 Already set up → skip to stage 01.
 
+## Before stage 01: is it in the tracker?
+
+**`triage`** when the request arrived as an issue, when the inbox has piled up, or when you are
+asked what to pick up next. It gives every open item a label it earns, and it verifies a ticket's
+premise still holds before marking it `ready-for-agent` — the code has moved since somebody wrote
+that assertion down.
+
+It does not implement anything. A triage pass that starts fixing is one fix and a full inbox.
+
+An issue that comes out `ready-for-agent` goes straight to stage 03. One that is still a vague
+idea goes to stage 01 below.
+
 ## Stage 01: shape the request
 
 **`shape-request`** — one question at a time, covering scope, users, constraints and success.
@@ -147,6 +159,8 @@ agent review works — it finds real things, and filing every one of them turns 
 from "pick this up" into "was filed".
 
 The one exception, always worth a ticket: **a fix you rejected, with the reason.**
+
+Applying that bar to a tracker that already piled up is **`triage`**.
 
 ## Context hygiene
 
