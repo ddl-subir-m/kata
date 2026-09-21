@@ -694,7 +694,7 @@ comment on each issue, where the next reader of that issue will find it.
 ````markdown
 ---
 name: grill
-description: Stress-test a plan, a decision or an idea with hard questions, one at a time. Use when thinking needs pressure-testing before it becomes work, or when something sounds right but has not been challenged. Triggers - "grill me", "poke holes in this", "stress-test this plan", "what am I missing", "challenge this".
+description: Stress-test a plan, a decision or an idea with hard questions, one at a time, grounded in the repo's own ADRs and vocabulary rather than asked from nothing. Use when thinking needs pressure-testing before it becomes work, or when something sounds right but has not been challenged. Triggers - "grill me", "poke holes in this", "stress-test this plan", "what am I missing", "challenge this".
 ---
 
 # Grill
@@ -718,6 +718,26 @@ that is being treated as settled.
     Round 3  →  the thing they keep restating instead of answering
 
 If an answer restates the plan rather than defending it, that is the frontier. Stay there.
+
+## Read the record before the first question
+
+A question from nothing is generic, and a generic question gets a generic answer. Read first, in
+this order, and only what is there:
+
+| Read | Looking for |
+| --- | --- |
+| `docs/adr/` | A decision this plan contradicts, or silently re-opens |
+| `CONTEXT.md` | A domain word being used in a second sense |
+| `docs/agents/issue-tracker.md` | Whether this is even worth a ticket |
+| `docs/research/`, if present | A question somebody already answered |
+
+**The sharpest question in the room is usually a citation.** "ADR-0007 chose the opposite and gave
+a reason - what changed?" cannot be waved away, and it takes one `ls docs/adr/` to find, because an
+ADR's title IS its decision.
+
+Say what you read, in one line, before you start. If none of those files exist, say that too and
+grill from first principles - but say it, so nobody mistakes an ungrounded interview for a
+grounded one.
 
 ## The questions that earn their place
 
