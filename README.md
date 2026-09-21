@@ -71,9 +71,9 @@ skills, so a teammate who clones it is offered the same install.
 | — | `wizard` | A bash wizard for the steps only a person can take |
 | — | `writing-for-agents` | Writing skills, `CLAUDE.md`, and the docs agents read |
 
-Eighteen skills, about 1,843 tokens always-on. A skill's full text is read only when it fires. The
+Eighteen skills, about 1,853 tokens always-on. A skill's full text is read only when it fires. The
 always-on figure is the real cost of breadth: it was 959 with ten skills. Each description is
-roughly 100 tokens, paid every session; `triage` added ~110. If a skill here is one you never
+roughly 100 tokens, paid every session; `triage` added ~110, and `setup-repo` is the heaviest single skill at ~140. If a skill here is one you never
 reach for, disabling the plugin per repo is cheaper than carrying it — or fork the marketplace and
 trim the `skills` array in `plugin.json`. `what-now` costs just ~40 of that, because it never fires
 on its own.
