@@ -2017,7 +2017,7 @@ costing every session from now on.
 ./scaffold.sh /path/to/new-repo
 ```
 
-12 files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
+11 files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
 
 ### `scaffold.sh`
 
@@ -2048,7 +2048,21 @@ copy() {
 }
 
 echo "Scaffolding $DEST"
-copy CLAUDE.md
+
+# CLAUDE.md is the one file a live repo usually already has, and it is the one
+# carrying the standing rules. Skipping it quietly leaves a repo with every doc
+# and none of the rules, so drop them alongside for merging and say so at the end.
+RULES_NOT_MERGED=""
+if [ -e CLAUDE.md ]; then
+  echo "  skip   CLAUDE.md (exists)"
+  if [ ! -e CLAUDE.kata.md ]; then
+    cp "$SRC/CLAUDE.md" CLAUDE.kata.md
+    echo "  create CLAUDE.kata.md (the standing rules, for you to merge)"
+  fi
+  RULES_NOT_MERGED="yes"
+else
+  copy CLAUDE.md
+fi
 copy CONTEXT.md
 copy .claude/settings.json
 copy docs/design-system.md
@@ -2089,6 +2103,16 @@ Done. Next, by hand:
 
 Step 5 is the one people skip. A green suite proves nothing until you have seen it red.
 NEXT
+
+if [ -n "$RULES_NOT_MERGED" ]; then
+  cat <<'RULES'
+
+  ! This repo already had a CLAUDE.md, so it was left alone and the standing
+    rules did NOT arrive. They are in CLAUDE.kata.md beside it. Merge what you
+    want into your own CLAUDE.md, then delete it. Until you do, the skills run
+    without the rules they were written against.
+RULES
+fi
 ````
 
 ---
