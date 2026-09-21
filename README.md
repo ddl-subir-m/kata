@@ -19,37 +19,37 @@ Pick a scope. Both are one line, and nothing is cloned by hand.
 **User scope** — the skills are live in every project on your machine:
 
 ```bash
-claude plugin marketplace add ddl-subir-m/how-i-ship \
-  && claude plugin install how-i-ship@how-i-ship
+claude plugin marketplace add ddl-subir-m/kata \
+  && claude plugin install kata@subir
 ```
 
 **Project scope** — run it inside the repo, then commit the file it writes, and everyone on the
 repo gets the skills:
 
 ```bash
-claude plugin marketplace add ddl-subir-m/how-i-ship --scope project \
-  && claude plugin install how-i-ship@how-i-ship --scope project
+claude plugin marketplace add ddl-subir-m/kata --scope project \
+  && claude plugin install kata@subir --scope project
 
-git add .claude/settings.json && git commit -m "Adopt the how-i-ship skills"
+git add .claude/settings.json && git commit -m "Adopt the kata skills"
 ```
 
 Already in a Claude Code session? The slash commands do the same thing, at user scope:
 
-    /plugin marketplace add ddl-subir-m/how-i-ship
-    /plugin install how-i-ship@how-i-ship
+    /plugin marketplace add ddl-subir-m/kata
+    /plugin install kata@subir
 
 Nine skills, about 936 tokens always-on. A skill's full text is read only when it fires.
 
-`the-loop` costs just ~40 of that, because it never fires on its own — it is invoked by name.
+`what-now` costs just ~40 of that, because it never fires on its own — it is invoked by name.
 
 ### Not on GitHub?
 
 The `owner/repo` shorthand is GitHub-only. Any other git host takes the full URL, HTTPS or SSH:
 
 ```bash
-claude plugin marketplace add https://gitlab.com/company/how-i-ship.git
-claude plugin marketplace add git@bitbucket.org:you/how-i-ship.git
-claude plugin marketplace add ./path/to/how-i-ship
+claude plugin marketplace add https://gitlab.com/company/kata.git
+claude plugin marketplace add git@bitbucket.org:you/kata.git
+claude plugin marketplace add ./path/to/kata
 ```
 
 Point at the **repo**, never at the raw `marketplace.json`. A direct link to that file downloads
@@ -65,7 +65,7 @@ would otherwise install code on someone's machine unasked.
 file. Anyone who does not want it turns it off for themselves only:
 
 ```bash
-claude plugin disable how-i-ship@how-i-ship --scope local
+claude plugin disable kata@subir --scope local
 ```
 
 **Your own plugins are safe.** `enabledPlugins` merges per key across scopes, so adopting this at
@@ -79,7 +79,7 @@ everywhere. `claude plugin list` shows the scope of each, and flags any key set 
 
 | Stage | Skill | What it does |
 | --- | --- | --- |
-| — | `the-loop` | Ask which skill fits. A router over the others, and a map of the flow |
+| — | `what-now` | Ask which skill fits. A router over the others, and a map of the flow |
 | 00 | `new-repo` | Scaffolds a new repo from the installed plugin. No clone needed |
 | 01 | `shape-request` | One question at a time until the spec writes itself, then tickets with dependencies |
 | 01/02 | `domain-modeling` | `CONTEXT.md` entries and ADRs whose titles are the decision |
@@ -91,7 +91,7 @@ everywhere. `claude plugin list` shows the scope of each, and flags any key set 
 
 ## Not sure which skill you want?
 
-Ask for `the-loop`. It is a router: it walks the six stages, names the branch points (does this
+Ask for `what-now`. It is a router: it walks the six stages, names the branch points (does this
 request even need shaping? is this red even yours?), and says plainly what this repo does **not**
 cover. It never fires on its own — you have to ask for it.
 
@@ -102,7 +102,7 @@ plugin. Nothing to clone.
 
 To run it by hand instead:
 
-    ~/.claude/plugins/marketplaces/how-i-ship/scaffold.sh /path/to/new-repo
+    ~/.claude/plugins/marketplaces/subir/scaffold.sh /path/to/new-repo
 
 Twelve files and one symlink. It never overwrites anything, so it is safe to re-run.
 

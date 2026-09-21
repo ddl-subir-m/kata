@@ -1,10 +1,13 @@
 {
   "extraKnownMarketplaces": {
-    "how-i-ship": {
-      "source": { "source": "github", "repo": "ddl-subir-m/how-i-ship" }
+    "subir": {
+      "source": {
+        "source": "github",
+        "repo": "ddl-subir-m/kata"
+      }
     }
   },
   "enabledPlugins": {
-    "how-i-ship@how-i-ship": true
+    "kata@subir": true
   }
 }

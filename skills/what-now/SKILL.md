@@ -1,10 +1,10 @@
 ---
-name: the-loop
-description: Ask which skill fits your situation. A router over the skills in this repo, and a map of the loop they form.
+name: what-now
+description: Ask which skill fits the situation you are in. A router over the other skills, and a map of the loop they form.
 disable-model-invocation: true
 ---
 
-# The loop
+# What now?
 
 You do not remember every skill, so ask.
 

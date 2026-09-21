@@ -60,29 +60,29 @@ Pick a scope. Both are one line.
 **User scope** — live in every project on the machine:
 
 ```bash
-claude plugin marketplace add ddl-subir-m/how-i-ship \
-  && claude plugin install how-i-ship@how-i-ship
+claude plugin marketplace add ddl-subir-m/kata \
+  && claude plugin install kata@subir
 ```
 
 **Project scope** — run inside the repo, then commit the file it writes:
 
 ```bash
-claude plugin marketplace add ddl-subir-m/how-i-ship --scope project \
-  && claude plugin install how-i-ship@how-i-ship --scope project
+claude plugin marketplace add ddl-subir-m/kata --scope project \
+  && claude plugin install kata@subir --scope project
 
-git add .claude/settings.json && git commit -m "Adopt the how-i-ship skills"
+git add .claude/settings.json && git commit -m "Adopt the kata skills"
 ```
 
 The slash commands do the same at user scope, from inside a session:
 
 ```
-/plugin marketplace add ddl-subir-m/how-i-ship
-/plugin install how-i-ship@how-i-ship
+/plugin marketplace add ddl-subir-m/kata
+/plugin install kata@subir
 ```
 
 Nine skills, about 936 tokens always-on. A skill's full text is read only when it fires.
 
-One of them, `the-loop`, is a router you invoke by name when you cannot remember which skill fits.
+One of them, `what-now`, is a router you invoke by name when you cannot remember which skill fits.
 It carries `disable-model-invocation: true`, so it never fires on its own and costs only ~40
 tokens always-on against a ~2.2k body.
 
@@ -94,7 +94,7 @@ Three things a teammate hits:
 - **Project scope waits for workspace trust.** The first session shows a prompt; the skills are
   absent until it is accepted.
 - **A project-scope plugin cannot be uninstalled per person.** To turn it off for yourself only:
-  `claude plugin disable how-i-ship@how-i-ship --scope local`
+  `claude plugin disable kata@subir --scope local`
 - **Existing plugins are safe.** `enabledPlugins` merges per key across scopes.
 
 A host other than GitHub takes the full git URL instead of the `owner/repo` shorthand. Point at
@@ -112,7 +112,7 @@ cat <<'MID'
 
 MID
 
-for s in the-loop new-repo shape-request domain-modeling design-check tdd scoped-review land diagnose; do
+for s in what-now new-repo shape-request domain-modeling design-check tdd scoped-review land diagnose; do
   embed "skills/$s/SKILL.md" markdown
 done
 

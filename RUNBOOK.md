@@ -37,29 +37,29 @@ Pick a scope. Both are one line.
 **User scope** — live in every project on the machine:
 
 ```bash
-claude plugin marketplace add ddl-subir-m/how-i-ship \
-  && claude plugin install how-i-ship@how-i-ship
+claude plugin marketplace add ddl-subir-m/kata \
+  && claude plugin install kata@subir
 ```
 
 **Project scope** — run inside the repo, then commit the file it writes:
 
 ```bash
-claude plugin marketplace add ddl-subir-m/how-i-ship --scope project \
-  && claude plugin install how-i-ship@how-i-ship --scope project
+claude plugin marketplace add ddl-subir-m/kata --scope project \
+  && claude plugin install kata@subir --scope project
 
-git add .claude/settings.json && git commit -m "Adopt the how-i-ship skills"
+git add .claude/settings.json && git commit -m "Adopt the kata skills"
 ```
 
 The slash commands do the same at user scope, from inside a session:
 
 ```
-/plugin marketplace add ddl-subir-m/how-i-ship
-/plugin install how-i-ship@how-i-ship
+/plugin marketplace add ddl-subir-m/kata
+/plugin install kata@subir
 ```
 
 Nine skills, about 936 tokens always-on. A skill's full text is read only when it fires.
 
-One of them, `the-loop`, is a router you invoke by name when you cannot remember which skill fits.
+One of them, `what-now`, is a router you invoke by name when you cannot remember which skill fits.
 It carries `disable-model-invocation: true`, so it never fires on its own and costs only ~40
 tokens always-on against a ~2.2k body.
 
@@ -71,7 +71,7 @@ Three things a teammate hits:
 - **Project scope waits for workspace trust.** The first session shows a prompt; the skills are
   absent until it is accepted.
 - **A project-scope plugin cannot be uninstalled per person.** To turn it off for yourself only:
-  `claude plugin disable how-i-ship@how-i-ship --scope local`
+  `claude plugin disable kata@subir --scope local`
 - **Existing plugins are safe.** `enabledPlugins` merges per key across scopes.
 
 A host other than GitHub takes the full git URL instead of the `owner/repo` shorthand. Point at
@@ -81,19 +81,27 @@ the repo, never at the raw `marketplace.json`.
 
 ```json
 {
-  "name": "how-i-ship",
+  "name": "subir",
   "owner": {
     "name": "Subir Mansukhani",
     "url": "https://github.com/ddl-subir-m"
   },
-  "description": "One loop, six stages, an agent at every step. The skills, the repo scaffold and the two gates that make an agent able to check its own work.",
+  "description": "Subir Mansukhani's engineering skills: one loop, six stages, an agent at every step.",
   "plugins": [
     {
-      "name": "how-i-ship",
+      "name": "kata",
       "source": "./",
-      "description": "Skills for the six-stage ship loop: shape a request, model the domain, write the test first, review the changed paths only, land safely, diagnose an alert.",
+      "description": "A rehearsed form for shipping: shape a request, model the domain, write the test first, review the changed paths only, land safely, diagnose an alert.",
       "category": "engineering",
-      "keywords": ["engineering", "skills", "tdd", "code-review", "adr", "landing", "ci"]
+      "keywords": [
+        "engineering",
+        "skills",
+        "tdd",
+        "code-review",
+        "adr",
+        "landing",
+        "ci"
+      ]
     }
   ]
 }
@@ -103,14 +111,14 @@ the repo, never at the raw `marketplace.json`.
 
 ```json
 {
-  "name": "how-i-ship",
-  "version": "1.3.0",
-  "description": "One loop, six stages, an agent at every step. Every stage ends by writing something down; the next stage starts by reading it.",
+  "name": "kata",
+  "version": "2.0.0",
+  "description": "A rehearsed form for shipping. One loop, six stages, an agent at every step; every stage ends by writing something down, and the next stage starts by reading it.",
   "author": {
     "name": "Subir Mansukhani",
     "url": "https://github.com/ddl-subir-m"
   },
-  "repository": "https://github.com/ddl-subir-m/how-i-ship",
+  "repository": "https://github.com/ddl-subir-m/kata",
   "license": "MIT",
   "keywords": [
     "engineering",
@@ -122,7 +130,7 @@ the repo, never at the raw `marketplace.json`.
     "ci"
   ],
   "skills": [
-    "./skills/the-loop",
+    "./skills/what-now",
     "./skills/new-repo",
     "./skills/shape-request",
     "./skills/domain-modeling",
@@ -139,16 +147,16 @@ the repo, never at the raw `marketplace.json`.
 
 ## 3. The skills in full
 
-### `skills/the-loop/SKILL.md`
+### `skills/what-now/SKILL.md`
 
 ````markdown
 ---
-name: the-loop
-description: Ask which skill fits your situation. A router over the skills in this repo, and a map of the loop they form.
+name: what-now
+description: Ask which skill fits the situation you are in. A router over the other skills, and a map of the loop they form.
 disable-model-invocation: true
 ---
 
-# The loop
+# What now?
 
 You do not remember every skill, so ask.
 
@@ -316,16 +324,21 @@ Try these in order. Stop at the first that resolves to an existing file.
 # The plugin's own root, when the harness exports it.
 [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && ls "$CLAUDE_PLUGIN_ROOT/scaffold.sh" 2>/dev/null
 
-# Otherwise search the plugin directories. Covers both the marketplace clone and the
-# versioned plugin cache, whatever the install path turns out to be.
-find ~/.claude/plugins -maxdepth 6 -name scaffold.sh -path '*how-i-ship*' 2>/dev/null | head -1
+# Otherwise find it structurally: the scaffold.sh that sits beside a plugin manifest
+# naming this plugin. Do NOT filter on the path -- the marketplace directory is named
+# after the marketplace, not the plugin, and a `-path '*subir*'` test matches every path
+# under a home directory called /Users/subir..., which is to say all of them.
+find ~/.claude/plugins -maxdepth 6 -name scaffold.sh 2>/dev/null | while read -r f; do
+  grep -q '"name": *"kata"' "$(dirname "$f")/.claude-plugin/plugin.json" 2>/dev/null \
+    && echo "$f" && break
+done
 ```
 
 **If neither finds it**, do not guess a path and do not improvise the file copies. Say the plugin
 looks half-installed, and give the person the fallback:
 
-    git clone git@github.com:ddl-subir-m/how-i-ship.git /tmp/how-i-ship
-    /tmp/how-i-ship/scaffold.sh <target>
+    git clone git@github.com:ddl-subir-m/kata.git /tmp/kata
+    /tmp/kata/scaffold.sh <target>
 
 ## 2. Confirm the target before writing
 
@@ -1262,12 +1275,15 @@ These are what `scaffold.sh` copies.
 ````json
 {
   "extraKnownMarketplaces": {
-    "how-i-ship": {
-      "source": { "source": "github", "repo": "ddl-subir-m/how-i-ship" }
+    "subir": {
+      "source": {
+        "source": "github",
+        "repo": "ddl-subir-m/kata"
+      }
     }
   },
   "enabledPlugins": {
-    "how-i-ship@how-i-ship": true
+    "kata@subir": true
   }
 }
 ````
@@ -1436,11 +1452,11 @@ condition the guard covers, confirm the failure, then remove the plant.
 
 ## The skills
 
-Installed from the `how-i-ship` plugin. One per stage:
+Installed from the `kata` plugin. One per stage:
 
 | Stage | Skill |
 | --- | --- |
-| Not sure which applies | `the-loop` (a router; ask for it by name) |
+| Not sure which applies | `what-now` (a router; ask for it by name) |
 | 00 Scaffold a repo like this one | `new-repo` |
 | 01 Shape a request into a spec and tickets | `shape-request` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |

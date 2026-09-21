@@ -16,16 +16,21 @@ Try these in order. Stop at the first that resolves to an existing file.
 # The plugin's own root, when the harness exports it.
 [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && ls "$CLAUDE_PLUGIN_ROOT/scaffold.sh" 2>/dev/null
 
-# Otherwise search the plugin directories. Covers both the marketplace clone and the
-# versioned plugin cache, whatever the install path turns out to be.
-find ~/.claude/plugins -maxdepth 6 -name scaffold.sh -path '*how-i-ship*' 2>/dev/null | head -1
+# Otherwise find it structurally: the scaffold.sh that sits beside a plugin manifest
+# naming this plugin. Do NOT filter on the path -- the marketplace directory is named
+# after the marketplace, not the plugin, and a `-path '*subir*'` test matches every path
+# under a home directory called /Users/subir..., which is to say all of them.
+find ~/.claude/plugins -maxdepth 6 -name scaffold.sh 2>/dev/null | while read -r f; do
+  grep -q '"name": *"kata"' "$(dirname "$f")/.claude-plugin/plugin.json" 2>/dev/null \
+    && echo "$f" && break
+done
 ```
 
 **If neither finds it**, do not guess a path and do not improvise the file copies. Say the plugin
 looks half-installed, and give the person the fallback:
 
-    git clone git@github.com:ddl-subir-m/how-i-ship.git /tmp/how-i-ship
-    /tmp/how-i-ship/scaffold.sh <target>
+    git clone git@github.com:ddl-subir-m/kata.git /tmp/kata
+    /tmp/kata/scaffold.sh <target>
 
 ## 2. Confirm the target before writing
 

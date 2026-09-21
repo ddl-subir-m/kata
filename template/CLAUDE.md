@@ -159,11 +159,11 @@ condition the guard covers, confirm the failure, then remove the plant.
 
 ## The skills
 
-Installed from the `how-i-ship` plugin. One per stage:
+Installed from the `kata` plugin. One per stage:
 
 | Stage | Skill |
 | --- | --- |
-| Not sure which applies | `the-loop` (a router; ask for it by name) |
+| Not sure which applies | `what-now` (a router; ask for it by name) |
 | 00 Scaffold a repo like this one | `new-repo` |
 | 01 Shape a request into a spec and tickets | `shape-request` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |

@@ -1,12 +1,12 @@
 {
-  "name": "how-i-ship",
-  "version": "1.3.0",
-  "description": "One loop, six stages, an agent at every step. Every stage ends by writing something down; the next stage starts by reading it.",
+  "name": "kata",
+  "version": "2.0.0",
+  "description": "A rehearsed form for shipping. One loop, six stages, an agent at every step; every stage ends by writing something down, and the next stage starts by reading it.",
   "author": {
     "name": "Subir Mansukhani",
     "url": "https://github.com/ddl-subir-m"
   },
-  "repository": "https://github.com/ddl-subir-m/how-i-ship",
+  "repository": "https://github.com/ddl-subir-m/kata",
   "license": "MIT",
   "keywords": [
     "engineering",
@@ -18,7 +18,7 @@
     "ci"
   ],
   "skills": [
-    "./skills/the-loop",
+    "./skills/what-now",
     "./skills/new-repo",
     "./skills/shape-request",
     "./skills/domain-modeling",
