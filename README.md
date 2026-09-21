@@ -21,23 +21,32 @@ claude plugin marketplace add ddl-subir-m/kata
 claude plugin install kata@subir
 ```
 
-That is the whole install. Eighteen skills, in every project on this machine.
+That is the whole install, once per machine. Eighteen skills, in every project.
 
 Already inside a Claude Code session? `/plugin marketplace add ddl-subir-m/kata` then
 `/plugin install kata@subir`.
 
-## Then what
+## Then just ask for things
 
-**Have a repo already?** Nothing more to do. Ask for `what-now` and it tells you which skill fits.
+There is no step two. You now have eighteen skills, and you use them by asking:
 
-**Starting a new one?** Ask for `new-repo` in any directory. It writes 12 files and an `AGENTS.md`
-symlink — the rules, the docs, the two gates, CI. It never overwrites, so re-running is safe.
+> "triage the inbox"  ·  "implement #42"  ·  "review this"  ·  "what now?"
 
-The skills live in `~/.claude`, shared by every repo. The 12 files live in the repo and get
-committed. One of them, `.claude/settings.json`, records that the repo uses these skills, so a
-teammate who clones it is offered the same install.
+**`new-repo` is one of those skills, not an install step.** If you are starting from an empty
+directory, ask for it and it writes 12 files and an `AGENTS.md` symlink — the rules, the docs, the
+two gates, CI. If you work on repos that already exist, you will never use it.
 
-That is the full picture. Everything below is detail you can read when you need it.
+It is not part of the install because the install is machine-wide: it runs from wherever you are
+standing, and it must not write files into a directory you did not name.
+
+<details>
+<summary>Where each piece lives</summary>
+
+The skills live in `~/.claude`, installed once, shared by every repo. The 12 files live in the
+repo and get committed. One of them, `.claude/settings.json`, records that the repo uses these
+skills, so a teammate who clones it is offered the same install.
+
+</details>
 
 ## The eighteen skills
 
