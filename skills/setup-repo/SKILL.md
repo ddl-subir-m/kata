@@ -104,6 +104,30 @@ The script prints these. Do not just repeat them — offer to do the ones you ca
 **Step 5 is the one people skip, and it is the one that matters.** A green suite proves nothing
 until you have seen it red. Run it and show the failure — do not just say the gate works.
 
+## 5b. Walk any label the script kept
+
+The script creates the six triage labels, but it never touches one that already exists - no
+`--force`, ever. It prints each kept label under a `!` line. Do not skim past that line.
+
+**`wontfix` is kept on almost every repo**, because it is one of GitHub's nine stock labels and
+ships with the repo from the day it was created. So this is the normal case, not the rare one.
+
+A name that already exists is not a meaning that already matches. Read
+`docs/agents/triage-labels.md` with the person, one kept label at a time, and ask what it means
+*here*:
+
+- **Same meaning** - nothing to do. GitHub's `wontfix` and ours usually agree.
+- **Different meaning** - a vocabulary collision, and `CONTEXT.md` is where that gets settled.
+  Either rename ours in `docs/agents/triage-labels.md`, or agree to retire the old use. Do not
+  quietly adopt the old one.
+
+**Never offer to overwrite the existing label.** Recolouring or re-describing somebody's label is
+not yours to do, and the damage is invisible: every filter written against it still returns rows,
+so nothing looks broken until somebody trusts the queue.
+
+If the repo has no remote yet, the script defers all of this to step 0 and there is nothing to
+walk. Say so rather than inventing a check.
+
 ## 6. The repo declares the plugin it needs
 
 `.claude/settings.json` is committed, and it names this marketplace and enables this plugin. Anyone

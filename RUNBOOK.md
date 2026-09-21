@@ -500,6 +500,30 @@ The script prints these. Do not just repeat them — offer to do the ones you ca
 **Step 5 is the one people skip, and it is the one that matters.** A green suite proves nothing
 until you have seen it red. Run it and show the failure — do not just say the gate works.
 
+## 5b. Walk any label the script kept
+
+The script creates the six triage labels, but it never touches one that already exists - no
+`--force`, ever. It prints each kept label under a `!` line. Do not skim past that line.
+
+**`wontfix` is kept on almost every repo**, because it is one of GitHub's nine stock labels and
+ships with the repo from the day it was created. So this is the normal case, not the rare one.
+
+A name that already exists is not a meaning that already matches. Read
+`docs/agents/triage-labels.md` with the person, one kept label at a time, and ask what it means
+*here*:
+
+- **Same meaning** - nothing to do. GitHub's `wontfix` and ours usually agree.
+- **Different meaning** - a vocabulary collision, and `CONTEXT.md` is where that gets settled.
+  Either rename ours in `docs/agents/triage-labels.md`, or agree to retire the old use. Do not
+  quietly adopt the old one.
+
+**Never offer to overwrite the existing label.** Recolouring or re-describing somebody's label is
+not yours to do, and the damage is invisible: every filter written against it still returns rows,
+so nothing looks broken until somebody trusts the queue.
+
+If the repo has no remote yet, the script defers all of this to step 0 and there is nothing to
+walk. Say so rather than inventing a check.
+
 ## 6. The repo declares the plugin it needs
 
 `.claude/settings.json` is committed, and it names this marketplace and enables this plugin. Anyone
@@ -2221,10 +2245,34 @@ else
 fi
 
 if git rev-parse --git-dir >/dev/null 2>&1 && gh repo view >/dev/null 2>&1; then
-  echo "Creating triage labels"
+  # Create what is missing. Never --force: that UPDATES a label that already exists, and
+  # `wontfix` is one of GitHub's nine stock labels, so it exists on essentially every repo
+  # from the day it is created. Measured on this repo: --force kept the description and
+  # replaced the colour with a random one, silently, on a label nobody asked us to touch.
+  EXISTING=$(gh label list --limit 200 --json name --jq '.[].name' 2>/dev/null)
+  KEPT=""
+  echo "Triage labels"
   for L in needs-triage needs-info ready-for-agent ready-for-human wontfix later; do
-    gh label create "$L" --force >/dev/null 2>&1 && echo "  label  $L"
+    if printf '%s\n' "$EXISTING" | grep -qx -- "$L"; then
+      echo "  keep   $L (already exists)"
+      KEPT="$KEPT $L"
+    elif gh label create "$L" >/dev/null 2>&1; then
+      echo "  create $L"
+    else
+      echo "  FAILED $L - create it by hand"
+    fi
   done
+
+  # A name that already exists is not the same as a meaning that already matches. This is a
+  # vocabulary collision, which is the thing CONTEXT.md exists for - so report it and let a
+  # person decide, rather than assuming either way.
+  if [ -n "$KEPT" ]; then
+    echo
+    echo "  ! These already existed and were left exactly as they are:$KEPT"
+    echo "    Check each one means what docs/agents/triage-labels.md says it means."
+    echo "    A label that already means something else here is worse than a missing one,"
+    echo "    because every filter written against it will look like it worked."
+  fi
 else
   # Say it here, at the point of failure - and again in the checklist below, because a line
   # printed twelve lines above a numbered list is a line people scroll past.
@@ -2237,9 +2285,15 @@ echo "Done. Next, by hand:"
 
 if [ -n "$LABELS_PENDING" ]; then
   cat <<'LABELS'
-  0. Create the repo on GitHub, then create the triage labels:
+  0. Create the repo on GitHub, then run this script again:
        gh repo create
-       for L in needs-triage needs-info ready-for-agent ready-for-human wontfix later; do gh label create $L --force; done
+       ./scaffold.sh .
+
+     Re-running is how the labels get created, and it is safe: the script never
+     overwrites a file that exists, so the second run writes nothing new and
+     does only the labels. Do not hand-write a `gh label create` loop here - the
+     script skips labels that already exist and reports them, and a bare loop
+     with --force would silently recolour GitHub's stock `wontfix`.
 
      Numbered 0 because it comes before the rest: until those labels exist,
      `triage` has no vocabulary, and `ready-for-agent` - the one label the whole
