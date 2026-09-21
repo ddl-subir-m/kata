@@ -30,12 +30,20 @@ echo "Scaffolding $DEST"
 # and none of the rules, so drop them alongside for merging and say so at the end.
 RULES_NOT_MERGED=""
 if [ -e CLAUDE.md ]; then
-  echo "  skip   CLAUDE.md (exists)"
-  if [ ! -e CLAUDE.kata.md ]; then
-    cp "$SRC/CLAUDE.md" CLAUDE.kata.md
-    echo "  create CLAUDE.kata.md (the standing rules, for you to merge)"
+  # An identical CLAUDE.md is OUR CLAUDE.md, from an earlier run. Step 0 tells people to run
+  # this script again, so that is the documented path - and it used to answer by dropping a
+  # byte-identical CLAUDE.kata.md and warning that the rules had not arrived, when they had.
+  # A false alarm on the happy path teaches people to ignore the true one.
+  if cmp -s "$SRC/CLAUDE.md" CLAUDE.md; then
+    echo "  skip   CLAUDE.md (already ours, unchanged)"
+  else
+    echo "  skip   CLAUDE.md (exists)"
+    if [ ! -e CLAUDE.kata.md ]; then
+      cp "$SRC/CLAUDE.md" CLAUDE.kata.md
+      echo "  create CLAUDE.kata.md (the standing rules, for you to merge)"
+    fi
+    RULES_NOT_MERGED="yes"
   fi
-  RULES_NOT_MERGED="yes"
 else
   copy CLAUDE.md
 fi
@@ -59,6 +67,9 @@ else
   echo "  create AGENTS.md -> CLAUDE.md"
 fi
 
+# Declared before the branch: `set -u` is on, and reading this at the checklist when the
+# labels branch succeeded killed the script before it printed a single step.
+LABELS_PENDING=""
 if git rev-parse --git-dir >/dev/null 2>&1 && gh repo view >/dev/null 2>&1; then
   # Create what is missing. Never --force: that UPDATES a label that already exists, and
   # `wontfix` is one of GitHub's nine stock labels, so it exists on essentially every repo
