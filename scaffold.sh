@@ -87,5 +87,10 @@ if [ -n "$RULES_NOT_MERGED" ]; then
     rules did NOT arrive. They are in CLAUDE.kata.md beside it. Merge what you
     want into your own CLAUDE.md, then delete it. Until you do, the skills run
     without the rules they were written against.
+
+    Merge the "Read these, and when" table first, even if you merge nothing
+    else. CLAUDE.md is the only file loaded into every session, so it is the
+    only thing that can tell an agent the docs under docs/ exist. Without it
+    those files are written, correct, and never opened.
 RULES
 fi

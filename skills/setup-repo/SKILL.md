@@ -53,6 +53,13 @@ the 13 standing rules do not arrive. The script drops them at `CLAUDE.kata.md` a
 merge is a person's judgement, not yours: their file may contradict the rules deliberately. Offer
 to walk it rule by rule. Never merge it silently.
 
+**Push the "Read these, and when" table hardest.** `CLAUDE.md` is the only file loaded into every
+session, so it is the only thing that can tell an agent that `docs/agents/` and `CONTEXT.md` exist
+at all. The skills hardcode those paths and so find them anyway — but a session where no skill
+fires does not. Somebody says "I'll open an issue for that", nothing routes, and the filing bar is
+sitting in a file nobody opened. Merging that one table is worth more than merging the other
+twelve rules.
+
 A repo with its own `Makefile` is the second one to check. The two gates must be reachable as
 `make test` and `make lint`; if those targets exist and mean something else, say so and stop rather
 than adding duplicates.

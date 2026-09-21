@@ -441,6 +441,13 @@ the 13 standing rules do not arrive. The script drops them at `CLAUDE.kata.md` a
 merge is a person's judgement, not yours: their file may contradict the rules deliberately. Offer
 to walk it rule by rule. Never merge it silently.
 
+**Push the "Read these, and when" table hardest.** `CLAUDE.md` is the only file loaded into every
+session, so it is the only thing that can tell an agent that `docs/agents/` and `CONTEXT.md` exist
+at all. The skills hardcode those paths and so find them anyway — but a session where no skill
+fires does not. Somebody says "I'll open an issue for that", nothing routes, and the filing bar is
+sitting in a file nobody opened. Merging that one table is worth more than merging the other
+twelve rules.
+
 A repo with its own `Makefile` is the second one to check. The two gates must be reachable as
 `make test` and `make lint`; if those targets exist and mean something else, say so and stop rather
 than adding duplicates.
@@ -2146,6 +2153,11 @@ if [ -n "$RULES_NOT_MERGED" ]; then
     rules did NOT arrive. They are in CLAUDE.kata.md beside it. Merge what you
     want into your own CLAUDE.md, then delete it. Until you do, the skills run
     without the rules they were written against.
+
+    Merge the "Read these, and when" table first, even if you merge nothing
+    else. CLAUDE.md is the only file loaded into every session, so it is the
+    only thing that can tell an agent the docs under docs/ exist. Without it
+    those files are written, correct, and never opened.
 RULES
 fi
 ````
@@ -2328,13 +2340,24 @@ condition the guard covers, confirm the failure, then remove the plant.
 > conditions, so it takes two plants. One plant going red tells you the test is connected to
 > something, not that it covers both.
 
-## Where things live
+## Read these, and when
 
-- `CONTEXT.md` — the shared vocabulary.
-- `docs/adr/` — decision records. The title IS the decision.
-- `docs/agents/issue-tracker.md` — how to file, and when NOT to.
-- `docs/agents/triage-labels.md` — the label vocabulary.
-- `docs/agents/domain.md` — how to read the domain docs.
+These are not an inventory. Each line says what makes you open the file, and the trigger is the
+part that matters — a file nobody opens at the right moment is the same as a file that is not
+there.
+
+| Before you… | Read | Because |
+| --- | --- | --- |
+| File an issue, or suggest filing one | `docs/agents/issue-tracker.md` | It carries the bar for what is worth a ticket, and what is not. Most things are not. |
+| Label an issue, or read a label | `docs/agents/triage-labels.md` | The vocabulary is fixed. `ready-for-agent` means a specific thing and rots if used loosely. |
+| Use a domain word in code or a ticket | `CONTEXT.md` | The shared vocabulary. A word that means two things here has already cost somebody a day. |
+| Make a decision that outlives the branch | `docs/adr/` | Decision records. The title IS the decision, so `ls` alone tells you the architecture. |
+| Touch anything with a UI | `docs/design-system.md` | The tokens and rules a design check runs against. |
+| Edit this file, a skill, or a doc agents read | `docs/agents/domain.md` | How the domain docs are meant to be written and kept. |
+
+**The filing bar is the one that fires without being asked.** Every other row waits for you to be
+doing that thing. This one has to interrupt you: the moment you are about to write "I'll open an
+issue for that", it applies. Work left undone belongs in the report, not in a new issue.
 
 ## The skills
 
