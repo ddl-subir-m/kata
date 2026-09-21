@@ -94,7 +94,7 @@ later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs i
 For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
 `enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
-Nine skills, about 899 tokens always-on. A skill's full text is read only when it fires.
+Ten skills, about 959 tokens always-on. A skill's full text is read only when it fires.
 
 One of them, `what-now`, is a router you invoke by name when you cannot remember which skill
 fits. It carries `disable-model-invocation: true`, so it never fires on its own and costs only
@@ -126,7 +126,7 @@ cat <<'MID'
 
 MID
 
-for s in what-now new-repo shape-request domain-modeling design-check tdd scoped-review land diagnose; do
+for s in what-now new-repo shape-request domain-modeling design-check implement tdd scoped-review land diagnose; do
   embed "skills/$s/SKILL.md" markdown
 done
 

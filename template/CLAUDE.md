@@ -168,6 +168,7 @@ Installed from the `kata` plugin. One per stage:
 | 01 Shape a request into a spec and tickets | `shape-request` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |
 | 02 Check a screen before anyone opens it | `design-check` |
+| 03 Build one ticket, reviewed and committed but not landed | `implement` |
 | 04 Write the test first; prove the guard is armed | `tdd` |
 | 05 Review only the changed paths | `scoped-review` |
 | 05 Merge main, prove the tested tree is the landing tree | `land` |

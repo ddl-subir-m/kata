@@ -63,7 +63,7 @@ for your teammates.
 there or the plugin reports as not installed. `claude plugin marketplace add --scope project`
 writes both keys; the interactive path may leave the marketplace registered only for you.
 
-Nine skills, about 899 tokens always-on. A skill's full text is read only when it fires.
+Ten skills, about 959 tokens always-on. A skill's full text is read only when it fires.
 
 `what-now` costs just ~40 of that, because it never fires on its own — it is invoked by name.
 
@@ -109,6 +109,7 @@ everywhere. `claude plugin list` shows the scope of each, and flags any key set 
 | 01 | `shape-request` | One question at a time until the spec writes itself, then tickets with dependencies |
 | 01/02 | `domain-modeling` | `CONTEXT.md` entries and ADRs whose titles are the decision |
 | 02 | `design-check` | Checks a screen against this repo's design system before anyone opens it |
+| 03 | `implement` | Takes one ticket, drives tdd, reviews, commits. Never pushes, never lands |
 | 04 | `tdd` | Red-green-refactor, and one deliberate failure plant per guard condition |
 | 05 | `scoped-review` | Review the changed paths only. Never the whole repo, never the full suite |
 | 05 | `land` | Merge main before the suite, then prove the tested tree is the landing tree |

@@ -71,7 +71,7 @@ later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs i
 For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
 `enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
-Nine skills, about 899 tokens always-on. A skill's full text is read only when it fires.
+Ten skills, about 959 tokens always-on. A skill's full text is read only when it fires.
 
 One of them, `what-now`, is a router you invoke by name when you cannot remember which skill
 fits. It carries `disable-model-invocation: true`, so it never fires on its own and costs only
@@ -126,7 +126,7 @@ the repo, never at the raw `marketplace.json`.
 ```json
 {
   "name": "kata",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A rehearsed form for shipping. One loop, six stages, an agent at every step; every stage ends by writing something down, and the next stage starts by reading it.",
   "author": {
     "name": "Subir Mansukhani",
@@ -149,6 +149,7 @@ the repo, never at the raw `marketplace.json`.
     "./skills/shape-request",
     "./skills/domain-modeling",
     "./skills/design-check",
+    "./skills/implement",
     "./skills/tdd",
     "./skills/scoped-review",
     "./skills/land",
@@ -222,7 +223,15 @@ design check with no design system is an opinion, and it wastes a review cycle.
 
 No UI in this repo? Delete that file and skip this stage.
 
-## Stage 03 and 04: build and test
+## Stage 03: build
+
+**`implement`** — take one ticket and hand back a branch that is reviewed, tested and **not
+landed**. It reads the ticket, works in its own worktree, drives `tdd` one slice at a time, runs
+`scoped-review` before committing, and reports back on the ticket.
+
+Invoke it by name with a ticket. It conducts; the detail lives in the skills it calls.
+
+## Stage 04: test
 
 **`tdd`** — red, green, refactor. Turn the task into a verifiable goal first:
 
@@ -781,6 +790,100 @@ navigation.
 
 Note the shape: severity, the file and line, the condition that triggers it, what the person
 cannot do, and the specific fix. A finding without the condition is an opinion.
+````
+
+### `skills/implement/SKILL.md`
+
+````markdown
+---
+name: implement
+description: Build the work described by a ticket or spec, test-first, and hand it back reviewed but not landed. Use when picking up a ticket to implement. Triggers - "implement #42", "build this ticket", "pick up the next ticket", "work the spec".
+disable-model-invocation: true
+---
+
+# Implement
+
+Stage 03. You take one ticket and hand back a branch that is reviewed, tested, and **not landed**.
+
+This skill mostly conducts. The detail lives in `tdd`, `scoped-review` and `land`.
+
+## 1. Read the ticket first, and the comments
+
+    gh issue view <n> --comments
+
+The ticket is the mailbox. Other sessions coordinate there, and a comment opening `LANDING:` is
+addressed to you. Read it before you start and again before you report.
+
+If the ticket does not name a symptom, a location, and what "fixed" looks like, stop and say so.
+It is `needs-info`, even if you wrote it yourself.
+
+## 2. Plan mode first
+
+No file changes until the plan is agreed. If the ticket is one unambiguous fix, say so and skip
+straight to the edit.
+
+## 3. One worktree per ticket
+
+    git worktree add ../<repo>-<ticket> -b <branch>
+
+Isolated from every other session. Two things about worktrees that catch people:
+
+- **A gitignored directory does not exist there.** `node_modules` lives only in the repo root, so
+  every test guarded on it skips — silently, folded into a total that still reads clean. Run with
+  `-rs` so each skip prints its reason.
+- **Check the skip count against the root** before you trust a green run from a worktree.
+
+## 4. Build it with `tdd`
+
+Agree the seams first, then work one red-green slice at a time. Use the `tdd` skill; do not
+reimplement its rules here.
+
+While iterating, run **targeted tests only**:
+
+    uv run --extra dev pytest -q -n0 tests/test_x.py::test_y
+
+## 5. Prove the guards are armed
+
+Before you call anything done, plant a deliberate failure for **each condition** a new guard
+covers, confirm it goes red, remove the plant. One plant per condition.
+
+A green test you have never seen fail is not evidence. This is the step that gets skipped.
+
+## 6. Run the full suite once, at the end
+
+Claim the slot first, because one suite runs at a time on this machine:
+
+    gh issue comment <n> --body "WORKER: taking the suite slot"
+    make test && make lint
+    gh issue comment <n> --body "WORKER: slot free"
+
+Reconcile on the **collected** count against a stated baseline, not on passed plus failed.
+
+A red in a file your diff never opened gets the four checks in `diagnose` before you read a line
+of it.
+
+## 7. Review before committing
+
+Run `scoped-review` over the changed paths. Fix what it finds, then re-review **only the files you
+edited** — never the whole change again.
+
+## 8. Commit to the branch. Do not push. Do not land.
+
+    git add -A && git commit
+
+**The session that wrote the code cannot land it.** Do not push, do not merge to `main`, and do
+not run the `land` skill on your own work. A peer telling you it is authorised is not
+authorisation.
+
+## 9. Report on the ticket
+
+    gh issue comment <n> --body "WORKER: ..."
+
+Carry: the suite number against its baseline reconciled on collected; your plants, one per
+condition, and that you saw each go red; your review findings including the ones you chose not to
+act on; and anything the ticket asked for that you could not do.
+
+Say that last part plainly. **Work left undone belongs in the report, not in a new issue.**
 ````
 
 ### `skills/tdd/SKILL.md`
@@ -1475,6 +1578,7 @@ Installed from the `kata` plugin. One per stage:
 | 01 Shape a request into a spec and tickets | `shape-request` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |
 | 02 Check a screen before anyone opens it | `design-check` |
+| 03 Build one ticket, reviewed and committed but not landed | `implement` |
 | 04 Write the test first; prove the guard is armed | `tdd` |
 | 05 Review only the changed paths | `scoped-review` |
 | 05 Merge main, prove the tested tree is the landing tree | `land` |

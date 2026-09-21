@@ -56,7 +56,15 @@ design check with no design system is an opinion, and it wastes a review cycle.
 
 No UI in this repo? Delete that file and skip this stage.
 
-## Stage 03 and 04: build and test
+## Stage 03: build
+
+**`implement`** — take one ticket and hand back a branch that is reviewed, tested and **not
+landed**. It reads the ticket, works in its own worktree, drives `tdd` one slice at a time, runs
+`scoped-review` before committing, and reports back on the ticket.
+
+Invoke it by name with a ticket. It conducts; the detail lives in the skills it calls.
+
+## Stage 04: test
 
 **`tdd`** — red, green, refactor. Turn the task into a verifiable goal first:
 
