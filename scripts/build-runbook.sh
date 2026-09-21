@@ -146,9 +146,11 @@ cat <<'MID3'
 ./scaffold.sh /path/to/new-repo
 ```
 
-Eleven files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
-
 MID3
+
+# Derived, not typed: the count drifted once when a twelfth template file was added.
+echo "$(grep -c '^copy ' scaffold.sh) files and one symlink. It never overwrites a file that exists, so it is safe to re-run."
+echo
 
 embed scaffold.sh bash
 

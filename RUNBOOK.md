@@ -2017,7 +2017,7 @@ costing every session from now on.
 ./scaffold.sh /path/to/new-repo
 ```
 
-Eleven files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
+12 files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
 
 ### `scaffold.sh`
 
