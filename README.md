@@ -14,98 +14,32 @@ work is worth doing and whether the draft is right. The agent does the writing.
 
 ## Install
 
-Pick a scope. Both are one line, and nothing is cloned by hand.
-
-**User scope** — the skills are live in every project on your machine:
+Everything is in this repo. You do not clone it.
 
 ```bash
-claude plugin marketplace add ddl-subir-m/kata \
-  && claude plugin install kata@subir
+claude plugin marketplace add ddl-subir-m/kata
+claude plugin install kata@subir
 ```
 
-**Project scope** — run it inside the repo, then commit the file it writes, and everyone on the
-repo gets the skills:
+That is the whole install. Eighteen skills, in every project on this machine.
 
-```bash
-claude plugin marketplace add ddl-subir-m/kata --scope project \
-  && claude plugin install kata@subir --scope project
+Already inside a Claude Code session? `/plugin marketplace add ddl-subir-m/kata` then
+`/plugin install kata@subir`.
 
-git add .claude/settings.json && git commit -m "Adopt the kata skills"
-```
+## Then what
 
-Already in a Claude Code session? `/plugin install` opens the plugin's details pane and asks you
-to pick the scope, so it covers **all three**:
+**Have a repo already?** Nothing more to do. Ask for `what-now` and it tells you which skill fits.
 
-    /plugin marketplace add ddl-subir-m/kata
-    /plugin install kata@subir
-    # then choose: User scope / Project scope / Local scope
+**Starting a new one?** Ask for `new-repo` in any directory. It writes 12 files and an `AGENTS.md`
+symlink — the rules, the docs, the two gates, CI. It never overwrites, so re-running is safe.
 
-Or add the marketplace and install in one command, on Claude Code v2.1.275 or later:
+The skills live in `~/.claude`, shared by every repo. The 12 files live in the repo and get
+committed. One of them, `.claude/settings.json`, records that the repo uses these skills, so a
+teammate who clones it is offered the same install.
 
-    /plugin install kata --marketplace ddl-subir-m/kata
+That is the full picture. Everything below is detail you can read when you need it.
 
-**`--scope` is a CLI flag only.** The slash command asks instead of taking a flag, so
-`/plugin install kata@subir --scope project` is not a thing.
-
-### The three scopes
-
-| Scope | Who gets it | Written to |
-| --- | --- | --- |
-| User | You, in every project | `~/.claude/settings.json` |
-| Project | Everyone on the repo | `.claude/settings.json`, commit it |
-| Local | You, in this repo only | `.claude/settings.local.json`, not shared |
-
-Local is the one to reach for when you want the skills on a repo without committing that choice
-for your teammates.
-
-**For project scope, prefer the CLI two-liner above.** Picking *Project scope* in the panel writes
-`enabledPlugins` to `.claude/settings.json`, but a teammate also needs `extraKnownMarketplaces`
-there or the plugin reports as not installed. `claude plugin marketplace add --scope project`
-writes both keys; the interactive path may leave the marketplace registered only for you.
-
-Eighteen skills, about 1,843 tokens always-on. A skill's full text is read only when it fires.
-
-That always-on figure is the real cost of breadth: it was 959 with ten skills. Each description
-is roughly 100 tokens, paid every session. `triage` added ~110. If a skill here is one you never reach for, disabling
-the plugin per repo is cheaper than carrying it — or fork the marketplace and trim the `skills`
-array in `plugin.json`.
-
-`what-now` costs just ~40 of that, because it never fires on its own — it is invoked by name.
-
-### Not on GitHub?
-
-The `owner/repo` shorthand is GitHub-only. Any other git host takes the full URL, HTTPS or SSH:
-
-```bash
-claude plugin marketplace add https://gitlab.com/company/kata.git
-claude plugin marketplace add git@bitbucket.org:you/kata.git
-claude plugin marketplace add ./path/to/kata
-```
-
-Point at the **repo**, never at the raw `marketplace.json`. A direct link to that file downloads
-only the file, and the plugin's `"source": "./"` then has nothing to resolve against.
-
-### Notes for teammates
-
-**Project scope waits for workspace trust.** The first session in the repo shows a trust prompt,
-and the skills are absent until it is accepted. That is deliberate: a committed settings file
-would otherwise install code on someone's machine unasked.
-
-**A project-scope plugin cannot be uninstalled per person.** It is owned by the shared settings
-file. Anyone who does not want it turns it off for themselves only:
-
-```bash
-claude plugin disable kata@subir --scope local
-```
-
-**Your own plugins are safe.** `enabledPlugins` merges per key across scopes, so adopting this at
-project scope leaves every user-level plugin enabled. Only a key named in both places changes, and
-the project file wins there.
-
-### Both scopes at once
-
-They compose. A project file says what the repo needs; your user install says what you want
-everywhere. `claude plugin list` shows the scope of each, and flags any key set in both.
+## The eighteen skills
 
 | Stage | Skill | What it does |
 | --- | --- | --- |
@@ -127,6 +61,13 @@ everywhere. `claude plugin list` shows the scope of each, and flags any key set 
 | 06 | `diagnose` | Reproduce, bisect the condition, hand back a root cause |
 | — | `wizard` | A bash wizard for the steps only a person can take |
 | — | `writing-for-agents` | Writing skills, `CLAUDE.md`, and the docs agents read |
+
+Eighteen skills, about 1,843 tokens always-on. A skill's full text is read only when it fires. The
+always-on figure is the real cost of breadth: it was 959 with ten skills. Each description is
+roughly 100 tokens, paid every session; `triage` added ~110. If a skill here is one you never
+reach for, disabling the plugin per repo is cheaper than carrying it — or fork the marketplace and
+trim the `skills` array in `plugin.json`. `what-now` costs just ~40 of that, because it never fires
+on its own.
 
 ## Not sure which skill you want?
 
@@ -192,6 +133,64 @@ and Y is wrong.* Everything else goes in the code, in the report, or on the `lat
 
 **A green test proves nothing until you have seen it red.** One deliberate failure plant per
 condition.
+
+## Installing it for a team
+
+The two commands at the top install for **you**, everywhere. To put it on a repo instead, so
+everyone who clones gets it:
+
+```bash
+claude plugin marketplace add ddl-subir-m/kata --scope project
+claude plugin install kata@subir --scope project
+git add .claude/settings.json && git commit -m "Adopt kata skills"
+```
+
+<details>
+<summary>The details that bite</summary>
+
+| Scope | Who gets it | Written to |
+| --- | --- | --- |
+| User | You, in every project | `~/.claude/settings.json` |
+| Project | Everyone on the repo | `.claude/settings.json`, commit it |
+| Local | You, in this repo only | `.claude/settings.local.json`, not shared |
+
+**Use the CLI for project scope, not the panel.** Picking *Project scope* in `/plugin` writes
+`enabledPlugins` but may leave the marketplace registered to you alone. The teammate then sees the
+plugin reported as not installed. `--scope project` writes both keys.
+
+**Project scope waits for workspace trust.** The first session in the repo shows a trust prompt,
+and the skills are absent until it is accepted. That is deliberate: a committed settings file
+would otherwise install code on someone's machine unasked.
+
+**A project-scope plugin cannot be uninstalled per person.** The shared settings file owns it.
+Anyone who does not want it turns it off for themselves only:
+
+```bash
+claude plugin disable kata@subir --scope local
+```
+
+**Your own plugins are safe.** `enabledPlugins` merges per key across scopes, so adopting this at
+project scope leaves every user-level plugin enabled. Only a key named in both places changes, and
+the project file wins there.
+
+**The scopes compose.** A project file says what the repo needs; your user install says what you
+want everywhere. `claude plugin list` shows the scope of each, and flags any key set in both.
+
+**`--scope` is a CLI flag only.** The slash command asks instead of taking a flag, so
+`/plugin install kata@subir --scope project` is not a thing.
+
+**Not on GitHub?** `owner/repo` is GitHub-only. Use a URL, HTTPS or SSH, or a local path:
+
+```bash
+claude plugin marketplace add https://gitlab.com/company/kata.git
+claude plugin marketplace add git@bitbucket.org:you/kata.git
+claude plugin marketplace add ./path/to/kata
+```
+
+Point at the **repo**, never at the raw `marketplace.json`. A direct link to that file downloads
+only the file, and the plugin's `"source": "./"` then has nothing to resolve against.
+
+</details>
 
 ## The full runbook
 
