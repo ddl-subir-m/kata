@@ -38,7 +38,7 @@ Already in a Claude Code session? The slash commands do the same thing, at user 
     /plugin marketplace add ddl-subir-m/kata
     /plugin install kata@subir
 
-Nine skills, about 936 tokens always-on. A skill's full text is read only when it fires.
+Nine skills, about 899 tokens always-on. A skill's full text is read only when it fires.
 
 `what-now` costs just ~40 of that, because it never fires on its own — it is invoked by name.
 
