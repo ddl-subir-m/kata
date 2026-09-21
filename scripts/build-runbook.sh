@@ -73,12 +73,26 @@ claude plugin marketplace add ddl-subir-m/kata --scope project \
 git add .claude/settings.json && git commit -m "Adopt the kata skills"
 ```
 
-The slash commands do the same at user scope, from inside a session:
+From inside a session, `/plugin install` opens the plugin's details pane and asks which scope,
+so it covers all three:
 
 ```
 /plugin marketplace add ddl-subir-m/kata
 /plugin install kata@subir
+# then choose: User scope / Project scope / Local scope
 ```
+
+`--scope` is a CLI flag only -- the slash command asks rather than taking a flag. On v2.1.275 or
+later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs in one go.
+
+| Scope | Who gets it | Written to |
+| --- | --- | --- |
+| User | You, in every project | `~/.claude/settings.json` |
+| Project | Everyone on the repo | `.claude/settings.json`, commit it |
+| Local | You, in this repo only | `.claude/settings.local.json`, not shared |
+
+For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
+`enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
 Nine skills, about 899 tokens always-on. A skill's full text is read only when it fires.
 

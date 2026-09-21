@@ -33,10 +33,35 @@ claude plugin marketplace add ddl-subir-m/kata --scope project \
 git add .claude/settings.json && git commit -m "Adopt the kata skills"
 ```
 
-Already in a Claude Code session? The slash commands do the same thing, at user scope:
+Already in a Claude Code session? `/plugin install` opens the plugin's details pane and asks you
+to pick the scope, so it covers **all three**:
 
     /plugin marketplace add ddl-subir-m/kata
     /plugin install kata@subir
+    # then choose: User scope / Project scope / Local scope
+
+Or add the marketplace and install in one command, on Claude Code v2.1.275 or later:
+
+    /plugin install kata --marketplace ddl-subir-m/kata
+
+**`--scope` is a CLI flag only.** The slash command asks instead of taking a flag, so
+`/plugin install kata@subir --scope project` is not a thing.
+
+### The three scopes
+
+| Scope | Who gets it | Written to |
+| --- | --- | --- |
+| User | You, in every project | `~/.claude/settings.json` |
+| Project | Everyone on the repo | `.claude/settings.json`, commit it |
+| Local | You, in this repo only | `.claude/settings.local.json`, not shared |
+
+Local is the one to reach for when you want the skills on a repo without committing that choice
+for your teammates.
+
+**For project scope, prefer the CLI two-liner above.** Picking *Project scope* in the panel writes
+`enabledPlugins` to `.claude/settings.json`, but a teammate also needs `extraKnownMarketplaces`
+there or the plugin reports as not installed. `claude plugin marketplace add --scope project`
+writes both keys; the interactive path may leave the marketplace registered only for you.
 
 Nine skills, about 899 tokens always-on. A skill's full text is read only when it fires.
 
