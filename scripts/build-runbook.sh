@@ -94,7 +94,7 @@ later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs i
 For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
 `enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
-Twenty skills, about 1,930 tokens always-on. A skill's full text is read only when it fires.
+Twenty skills, about 2,060 tokens always-on. A skill's full text is read only when it fires.
 
 That always-on figure is the real cost of breadth: it was 959 with ten skills. Each description
 is roughly 100 tokens, paid every session. If a skill here is one you never reach for, disabling

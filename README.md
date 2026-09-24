@@ -73,9 +73,9 @@ skills, so a teammate who clones it is offered the same install.
 | — | `wizard` | A bash wizard for the steps only a person can take |
 | — | `writing-for-agents` | Writing skills, `CLAUDE.md`, and the docs agents read |
 
-Twenty skills, about 1,930 tokens always-on. A skill's full text is read only when it fires. The
+Twenty skills, about 2,060 tokens always-on. A skill's full text is read only when it fires. The
 always-on figure is the real cost of breadth: it was 959 with ten skills. Each description is
-roughly 100 tokens, paid every session; `triage` added ~110, and `grill` is now the heaviest single
+roughly 100 tokens, paid every session; `triage` added ~110, `dispatch` ~130, and `grill` is now the heaviest single
 skill at ~145, having grown when it learned to read the ADRs and write them. If a skill here is one
 you never reach for, disabling the plugin per repo is cheaper than carrying it — or fork the
 marketplace and trim the `skills` array in `plugin.json`. `what-now` and `grill-only` cost just ~40
