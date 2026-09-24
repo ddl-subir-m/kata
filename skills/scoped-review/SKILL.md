@@ -10,8 +10,12 @@ model turns and finds no more than a scoped one.
 
 ## 1. Collect the changed paths first
 
-    git diff --name-only $(git merge-base HEAD origin/main)...HEAD
+    git diff --name-only $(git merge-base HEAD origin/main)
     git ls-files --others --exclude-standard
+
+The first line compares the merge base with the **working tree**, so it covers committed,
+staged and unstaged changes. `implement` reviews before it commits; a `...HEAD` range would show
+nothing there. The second line adds the new files git does not track yet.
 
 If you cannot name the changed paths, stop and ask. A review with no scope is the most expensive
 mistake available here.

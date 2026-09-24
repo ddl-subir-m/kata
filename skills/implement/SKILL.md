@@ -11,7 +11,10 @@ This skill mostly conducts. The detail lives in `tdd`, `scoped-review` and `land
 
 ## 1. Read the ticket first, and the comments
 
-    gh issue view <n> --comments
+    gh issue view <n>              # the body: symptom, location, what "fixed" looks like
+    gh issue view <n> --comments   # the comments
+
+Run both. Outside a terminal, `--comments` prints the comments only, not the body.
 
 The ticket is the mailbox. Other sessions coordinate there, and a comment opening `LANDING:` is
 addressed to you. Read it before you start and again before you report.
@@ -61,13 +64,35 @@ A green test you have never seen fail is not evidence. This is the step that get
 
 ## 6. Run the full suite once, at the end
 
-Claim the slot first, because one suite runs at a time on this machine:
+**Merge `main` into your branch first.** Other workers land while you build, and a green run
+only describes the code it ran against:
+
+    git fetch origin
+    git merge --no-ff origin/main     # into your branch; resolve any conflict by intent
+
+Then claim the slot, because one suite runs at a time on this machine:
 
     gh issue comment <n> --body "WORKER: taking the suite slot"
     make test && make lint
     gh issue comment <n> --body "WORKER: slot free"
 
-Reconcile on the **collected** count against a stated baseline, not on passed plus failed.
+Then check that `main` did not move while the suite ran:
+
+    git fetch origin
+    [ "$(git rev-parse HEAD^{tree})" = "$(git merge-tree --write-tree origin/main HEAD)" ] && echo same
+
+Not the same: merge again and run the suite again.
+
+Reconcile on the **collected** count against a stated baseline, not on passed plus failed. The
+baseline is the count on the `main` you merged, collected in a throwaway worktree so your own
+tree is never touched:
+
+    git worktree add --detach ../baseline origin/main
+    (cd ../baseline && uv run --extra dev pytest --collect-only -q | tail -1)
+    git worktree remove --force ../baseline   # throwaway: the run leaves a venv and a lock there
+
+Do not `git stash` your work to count the baseline. A pop that fails part way leaves the worktree
+half yours and half not.
 
 A red in a file your diff never opened gets the four checks in `diagnose` before you read a line
 of it.
@@ -79,7 +104,12 @@ edited** — never the whole change again.
 
 ## 8. Commit to the branch. Do not push. Do not land.
 
-    git add -A && git commit
+    git status --short                # look first
+    git add <each file you changed>
+    git commit
+
+Stage files by name. `git add -A` takes whatever the run left behind — bytecode, caches, a scratch
+file — and a merge conflict in a file you never meant to commit is still a conflict.
 
 **The session that wrote the code cannot land it.** Do not push, do not merge to `main`, and do
 not run the `land` skill on your own work. A peer telling you it is authorised is not
