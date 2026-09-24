@@ -904,10 +904,35 @@ Example of a request that does not:
 
 The second one has no scope, no user, no number that says when it is fixed.
 
+## Offer `grill` first when the idea is not ready to shape
+
+Shaping settles *what done means*. It does not test whether the idea is right. Before the first
+question, and again after any answer, look for these signals:
+
+- The request names a solution, not a problem. "Add a cache" rather than "the page is slow".
+- An answer rests on a claim nobody has checked. "Users want this", with no user named.
+- An answer restates the plan instead of answering the question.
+- The idea contradicts an ADR in `docs/adr/`, or uses a `CONTEXT.md` word in a second sense.
+
+When you see one, say which signal, and offer `grill` in one line:
+
+> "This asks for a cache, but nobody has said what is slow. Grill the idea first, or shape it as
+> it stands?"
+
+The person chooses. Offer it once per signal; do not repeat the offer after they decline. No
+signal, no offer — a grill on an idea that is already clear wastes the person's time.
+
 ## Ask one question at a time
 
 Never a numbered list of six questions. One question, wait, then the next. The answers change
 which question comes next, and a batch of six forces the person to answer the wrong ones.
+
+**Give a recommended answer with each question**, and the reason in one line. Base it on what you
+can read: the code, `CONTEXT.md`, `docs/adr/`, the request itself. A person answers faster when
+they can say "yes" or correct a draft than when they start from nothing.
+
+The recommendation is a draft, not a decision. The person's answer is the one that goes in the
+spec. When you have nothing to base a recommendation on, say so rather than guessing.
 
 Cover these four, in this order:
 
@@ -923,7 +948,8 @@ Cover these four, in this order:
 > **Request:** "Users are complaining that sync is slow."
 >
 > **Q1 (scope):** "Is this about the initial sync when a workspace connects, or the incremental
-> sync that runs every few minutes?"
+> sync that runs every few minutes? **Recommended: incremental.** The three complaints in the
+> issue all mention the 5-minute refresh."
 > **A:** "Incremental."
 >
 > **Q2 (users):** "Which workspaces? Everyone, or the large ones?"
