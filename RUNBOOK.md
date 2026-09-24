@@ -987,6 +987,23 @@ not a design document and it is not a plan.
     ## Success criteria  (the number, and how it is measured)
     ## Open questions
 
+### Read the words back before you publish
+
+The spec is written in your words. Before it goes out, check that they are the person's words
+too. List every domain word the spec leans on — the new ones and the ones already in `CONTEXT.md`
+— with one line on what you take each to mean:
+
+> Before I publish, these are the words the spec uses, and what I take each to mean:
+>
+> - **Incremental sync** — the job that runs every 5 minutes. Not the first import.
+> - **Workspace** — one customer's project. Not the organisation that owns it.
+>
+> Does each one match what you mean?
+
+A correction changes the spec, and the `CONTEXT.md` entry through `domain-modeling`. An entry
+already in `CONTEXT.md` can be wrong too: a disagreement there is a reason to fix the entry, not
+to take the entry's side.
+
 Publish it as a GitHub issue. See `docs/agents/issue-tracker.md` in the repo for the commands.
 
 ## Break it into tickets
@@ -1147,6 +1164,25 @@ Write an entry the moment you catch either of these:
 
 The second is the expensive one. It does not look like a problem until someone fixes the wrong
 sync.
+
+### Confirm the entry with the person before you write it
+
+An entry is your reading of what the person meant. If your reading is wrong, the glossary makes
+the mistake permanent: every later session reads it as settled.
+
+Show the entry in plain words, then ask:
+
+> **Binding** — a link between a conversation and one table the agent may read. A person makes it
+> with a click; the agent never does. It stays after the conversation ends.
+> **Not:** a connection. One connection carries many bindings.
+>
+> Is that what you mean by "binding"? Correct anything that is off.
+
+Write it only after they agree. When they correct it, use their words, not a paraphrase of them.
+Ask about one entry at a time, while the word is still fresh.
+
+A word already in `CONTEXT.md` gets the same check when the person uses it in a way the entry does
+not cover. Quote the entry and ask which one they mean. Do not decide it yourself.
 
 ## ADRs — the title is the decision
 

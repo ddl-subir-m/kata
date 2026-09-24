@@ -97,6 +97,23 @@ not a design document and it is not a plan.
     ## Success criteria  (the number, and how it is measured)
     ## Open questions
 
+### Read the words back before you publish
+
+The spec is written in your words. Before it goes out, check that they are the person's words
+too. List every domain word the spec leans on — the new ones and the ones already in `CONTEXT.md`
+— with one line on what you take each to mean:
+
+> Before I publish, these are the words the spec uses, and what I take each to mean:
+>
+> - **Incremental sync** — the job that runs every 5 minutes. Not the first import.
+> - **Workspace** — one customer's project. Not the organisation that owns it.
+>
+> Does each one match what you mean?
+
+A correction changes the spec, and the `CONTEXT.md` entry through `domain-modeling`. An entry
+already in `CONTEXT.md` can be wrong too: a disagreement there is a reason to fix the entry, not
+to take the entry's side.
+
 Publish it as a GitHub issue. See `docs/agents/issue-tracker.md` in the repo for the commands.
 
 ## Break it into tickets

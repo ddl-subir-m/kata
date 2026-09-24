@@ -49,6 +49,25 @@ Write an entry the moment you catch either of these:
 The second is the expensive one. It does not look like a problem until someone fixes the wrong
 sync.
 
+### Confirm the entry with the person before you write it
+
+An entry is your reading of what the person meant. If your reading is wrong, the glossary makes
+the mistake permanent: every later session reads it as settled.
+
+Show the entry in plain words, then ask:
+
+> **Binding** — a link between a conversation and one table the agent may read. A person makes it
+> with a click; the agent never does. It stays after the conversation ends.
+> **Not:** a connection. One connection carries many bindings.
+>
+> Is that what you mean by "binding"? Correct anything that is off.
+
+Write it only after they agree. When they correct it, use their words, not a paraphrase of them.
+Ask about one entry at a time, while the word is still fresh.
+
+A word already in `CONTEXT.md` gets the same check when the person uses it in a way the entry does
+not cover. Quote the entry and ask which one they mean. Do not decide it yourself.
+
 ## ADRs — the title is the decision
 
 Not "database choice". Not "ADR about caching". The sentence you would say out loud.
