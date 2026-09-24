@@ -1,10 +1,14 @@
 # The two steps are `make test` and `make lint`, never the commands they wrap. That is the whole
 # point: CI and a laptop run the same two targets, so they cannot drift apart.
 #
-# Node is not optional here if any test file skips itself when `node` is absent. A Python-only
-# runner passes green while testing none of the JavaScript, and that is worse than no CI — it
-# looks like coverage. `tests/test_ci_does_not_report_success_on_a_skipped_suite.py` fails loudly
-# if that ever regresses, so this file and that one have to stay in step.
+# A tool is not optional here once any test file skips itself when that tool is absent. A
+# Python-only runner passes green while testing none of the JavaScript, and that is worse than no
+# CI — it looks like coverage. `tests/test_ci_does_not_report_success_on_a_skipped_suite.py` fails
+# loudly if that ever regresses, so this file and that one have to stay in step: a tool in its
+# list is installed here, and a tool installed here is in its list.
+#
+# A new repo skips on nothing, so both start empty. Uncomment a step below in the same commit that
+# adds its tool to that list.
 name: tests
 
 on:
@@ -23,17 +27,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          # Before lowering this pin, grep the JS harnesses for `node:` imports and check each
-          # export against the floor — rather than trusting this comment. A comment was true when
-          # it was written; a harness added a third module and nothing re-read it.
+      # - uses: actions/setup-node@v4
+      #   with:
+      #     node-version: "22"
+      #     # Before lowering this pin, grep the JS harnesses for `node:` imports and check each
+      #     # export against the floor — rather than trusting this comment. A comment was true when
+      #     # it was written; a harness added a third module and nothing re-read it.
 
-      - name: Install ripgrep
-        # Present on the runner image today. Installed anyway, so the suite does not depend on
-        # that staying true. The canary test turns its absence into a failure, not a silent skip.
-        run: sudo apt-get update && sudo apt-get install -y ripgrep
+      # - name: Install ripgrep
+      #   # Present on the runner image today. Installed anyway, so the suite does not depend on
+      #   # that staying true. The canary test turns its absence into a failure, not a silent skip.
+      #   run: sudo apt-get update && sudo apt-get install -y ripgrep
 
       - uses: astral-sh/setup-uv@v5
         with:
