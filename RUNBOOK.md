@@ -131,7 +131,7 @@ the repo, never at the raw `marketplace.json`.
 ```json
 {
   "name": "kata",
-  "version": "3.3.0",
+  "version": "1.0.0",
   "description": "A rehearsed form for shipping. One loop, six stages, an agent at every step; every stage ends by writing something down, and the next stage starts by reading it.",
   "author": {
     "name": "Subir Mansukhani",
