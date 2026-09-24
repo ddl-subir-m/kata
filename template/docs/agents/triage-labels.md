@@ -9,11 +9,14 @@
 | `wontfix`         | Will not be actioned                       |
 | `later`           | Real, correctly filed, no live symptom     |
 
-Create them once:
+`setup-repo` creates the ones that are missing. If the repo had no GitHub remote when it ran, run
+`setup-repo` again once the remote exists. It skips every file already there, so only the labels
+change.
 
-    for L in needs-triage needs-info ready-for-agent ready-for-human wontfix later; do
-      gh label create "$L" --force
-    done
+Do not write a `gh label create --force` loop instead. `--force` changes a label that already
+exists, and `wontfix` exists on almost every repo from the day GitHub creates it. The script
+creates only what is missing, and names each label it kept so you can check that it means the
+same thing here.
 
 ## One example per label
 
