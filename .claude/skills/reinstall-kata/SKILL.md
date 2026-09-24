@@ -36,9 +36,15 @@ claude plugin install kata@subir
 Read the installed path. Do not glob the cache: old versions stay there after an upgrade, so
 `kata/*/` matches several folders and `diff` fails with a usage error.
 
+Compare everything a user of the plugin runs: the skills, and the template and script that
+`setup-repo` copies from. A fix to `template/` or `scaffold.sh` alone does not show in `skills/`.
+
 ```bash
 INSTALLED=$(jq -r '.plugins["kata@subir"][0].installPath' ~/.claude/plugins/installed_plugins.json)
-diff -rq skills "$INSTALLED/skills" && echo "installed copy matches"
+diff -rq skills "$INSTALLED/skills" \
+  && diff -rq template "$INSTALLED/template" \
+  && diff -q scaffold.sh "$INSTALLED/scaffold.sh" \
+  && echo "installed copy matches"
 ```
 
 Any difference means the install did not take the pushed commit. Report the diff; do not report
