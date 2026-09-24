@@ -29,6 +29,7 @@
     "./skills/codebase-design",
     "./skills/design-check",
     "./skills/prototype",
+    "./skills/dispatch",
     "./skills/implement",
     "./skills/tdd",
     "./skills/scoped-review",

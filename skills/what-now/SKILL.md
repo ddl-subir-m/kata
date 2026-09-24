@@ -99,6 +99,11 @@ landed**. It reads the ticket, works in its own worktree, drives `tdd` one slice
 
 Invoke it by name with a ticket. It conducts; the detail lives in the skills it calls.
 
+**`dispatch`** — when more than one ticket is ready. Give it a spec or a list of tickets. It puts
+them in waves by what blocks what, cuts one worktree per ticket, starts a worker in each (prompts
+you paste, or background agents), then **becomes the landing session** and lands each branch as
+its report comes in. It writes no product code, which is why it is allowed to land.
+
 ## Stage 04: test
 
 **`tdd`** — red, green, refactor. Turn the task into a verifiable goal first:
@@ -178,7 +183,7 @@ Keep stage 01 in **one unbroken window** — the shaping, the spec and the ticke
 on the same thinking. Then each build starts fresh from its ticket, because a ticket is
 self-contained and the last one's context is disposable.
 
-Work runs in parallel across separate worktrees, one per ticket. **Cap how wide you run at what
+Work runs in parallel across separate worktrees, one per ticket; `dispatch` sets them up. **Cap how wide you run at what
 you can keep up with.** Builds constantly surface decisions only a person should make; run wider
 than you can follow and those decisions get made by an agent guessing, or do not get made at all.
 

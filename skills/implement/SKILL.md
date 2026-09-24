@@ -1,7 +1,6 @@
 ---
 name: implement
 description: Build the work described by a ticket or spec, test-first, and hand it back reviewed but not landed. Use when picking up a ticket to implement. Triggers - "implement #42", "build this ticket", "pick up the next ticket", "work the spec".
-disable-model-invocation: true
 ---
 
 # Implement
@@ -25,9 +24,17 @@ It is `needs-info`, even if you wrote it yourself.
 No file changes until the plan is agreed. If the ticket is one unambiguous fix, say so and skip
 straight to the edit.
 
+**Running as a background worker** (started by `dispatch`, with no person to ask): there is no plan
+mode and no way to wait for an answer. The ticket is the agreed plan — `ready-for-agent` means an
+agent can start without asking a question. When you reach a decision the ticket does not settle,
+do not guess. Commit what you have, post the question in your report (step 9), and stop.
+
 ## 3. One worktree per ticket
 
     git worktree add ../<repo>-<ticket> -b <branch>
+
+If `dispatch` started you, it already cut the worktree and named it in your prompt. Work there and
+do not cut another. Check with `git rev-parse --show-toplevel` before the first edit.
 
 Isolated from every other session. Two things about worktrees that catch people:
 
@@ -80,7 +87,10 @@ authorisation.
 
 ## 9. Report on the ticket
 
-    gh issue comment <n> --body "WORKER: ..."
+    gh issue comment <n> --body "WORKER: report ..."
+
+Start the body with `WORKER: report`, exactly. `dispatch` watches for that line to know the branch
+is ready to land, and the suite-slot comments also start with `WORKER:`.
 
 Carry: the suite number against its baseline reconciled on collected; your plants, one per
 condition, and that you saw each go red; your review findings including the ones you chose not to

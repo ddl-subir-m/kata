@@ -111,6 +111,16 @@ native issue dependencies so the block is visible in the UI:
 `issue_id` is the numeric **database id**, not the `#number` and not the `node_id`. Getting this
 wrong creates no edge and reports no error.
 
+Make each ticket a **sub-issue of the spec**. That link is how `dispatch` finds the tickets that
+belong to a spec; without it, the spec and its tickets are unrelated issues.
+
+    CHILD_ID=$(gh api repos/<owner>/<repo>/issues/<child> --jq .id)
+    gh api --method POST repos/<owner>/<repo>/issues/<spec>/sub_issues -F sub_issue_id=$CHILD_ID
+
+The same trap: `sub_issue_id` is the database id. Check the link took:
+
+    gh api repos/<owner>/<repo>/issues/<spec>/sub_issues --jq '.[].number'
+
 ### Worked example
 
 From the spec above:
@@ -135,3 +145,6 @@ the reason a vocabulary rots is that somebody meant to write it down later.
 
 Give the person: the spec issue number, the ticket numbers in dependency order, and any question
 you could not answer. Say plainly which of the four areas is still thin.
+
+Then offer the next step. One ticket: `implement #<n>`. More than one: `dispatch #<spec>`, which
+runs the tickets in parallel worktrees and lands them in order.
