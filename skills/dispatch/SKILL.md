@@ -117,6 +117,14 @@ When a report arrives:
        gh issue close <n>
        git worktree remove ../<repo>-<n>
 
+   The ticket may be closed already: a commit that says "closes #<n>" closes it when it reaches
+   `main`. `gh issue close` then prints a warning. That is not a failure.
+
+   If `git worktree remove` refuses, look before anything else: `git -C ../<repo>-<n> status
+   --short`. The branch has landed, so the work is safe on `main`. Files that are only caches mean
+   the repo's `.gitignore` is missing them — use `--force`, and tell the person which lines to add.
+   Anything else is a file the worker left behind. Show it to the person; do not delete it.
+
 Land one branch at a time. Each landing moves `main`, so the next branch merges the new tip before
 its suite. Two landings in parallel test against a `main` that one of them is about to change.
 
