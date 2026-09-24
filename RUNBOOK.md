@@ -262,10 +262,15 @@ the question in one sentence first; a prototype that answers no question is unre
 **`design-check`** — checks a screen against the repo's own design system **before anyone opens
 it**. UX rules get applied while the work is written, not caught in review.
 
-It reads `docs/design-system.md` and **refuses to run if there is none**. That is deliberate: a
-design check with no design system is an opinion, and it wastes a review cycle.
+It looks for a design system in three places and stops at the first it finds:
+`docs/design-system.md`, a file named in `CLAUDE.md`, then any `~/.claude/rules/*design*.md`.
+**If it finds none, it refuses to run.** That is deliberate: a design check with no design system
+is an opinion, and it wastes a review cycle.
 
-No UI in this repo? Delete that file and skip this stage.
+The last place is on one person's machine. Put the file in `docs/` when teammates need the same
+check.
+
+No UI in this repo? Delete `docs/design-system.md` and skip this stage.
 
 ## Stage 03: build
 
