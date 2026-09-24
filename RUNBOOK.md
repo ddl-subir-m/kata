@@ -445,13 +445,13 @@ Both are supported and the script is the same. What differs is what you promise.
 
     ls -A <target> 2>/dev/null | head -1        # empty output = nothing there yet
 
-**Empty.** All 13 files land, plus the symlink. Say that.
+**Empty.** All 14 files land, plus the symlink. Say that.
 
-**Has history.** Most of the 12 may already exist under other names, and the script writes only
+**Has history.** Most of the 13 may already exist under other names, and the script writes only
 what is missing. Do not promise 12. Look first, then say what is actually absent:
 
     for f in CLAUDE.md CONTEXT.md Makefile docs/design-system.md docs/adr docs/agents \
-             .python-version .github/workflows/tests.yml .claude/settings.json; do
+             .python-version .gitignore .github/workflows/tests.yml .claude/settings.json; do
       [ -e "<target>/$f" ] || echo "missing: $f"
     done
 
@@ -459,6 +459,11 @@ what is missing. Do not promise 12. Look first, then say what is actually absent
 the 13 standing rules do not arrive. The script drops them at `CLAUDE.kata.md` and warns, but the
 merge is a person's judgement, not yours: their file may contradict the rules deliberately. Offer
 to walk it rule by rule. Never merge it silently.
+
+**A repo with its own `.gitignore` keeps it.** Check that it ignores `.venv/`, `__pycache__/`,
+`.pytest_cache/` and `.ruff_cache/`. If a cache is not ignored, a test run changes tracked files,
+and `git worktree remove` refuses a worktree whose branch has already landed. Offer the missing
+lines; do not add them silently.
 
 **Push the "Read these, and when" table hardest.** `CLAUDE.md` is the only file loaded into every
 session, so it is the only thing that can tell an agent that `docs/agents/` and `CONTEXT.md` exist
@@ -477,7 +482,7 @@ Ask for the target directory if the person did not name one. Do not assume the c
 
 Then say what will happen, in one line, and wait:
 
-> "This writes 13 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
+> "This writes 14 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
 > already exists. Go ahead?"
 
 For a repo with history, name the real number instead, and name what it will not do:
@@ -2401,7 +2406,7 @@ costing every session from now on.
 ./scaffold.sh /path/to/repo
 ```
 
-13 files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
+14 files and one symlink. It never overwrites a file that exists, so it is safe to re-run.
 
 ### `scaffold.sh`
 
@@ -2465,6 +2470,7 @@ copy docs/agents/domain.md
 copy pyproject.toml
 copy Makefile
 copy .python-version
+copy .gitignore
 copy .github/workflows/tests.yml
 copy tests/test_ci_does_not_report_success_on_a_skipped_suite.py
 

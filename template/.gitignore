@@ -1,0 +1,9 @@
+# Written by setup-repo. Without these, a test run changes tracked files, `git add -A` commits
+# bytecode, and `git worktree remove` refuses a worktree whose branch has already landed.
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+node_modules/
+.DS_Store

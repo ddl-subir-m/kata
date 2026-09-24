@@ -57,6 +57,7 @@ copy docs/agents/domain.md
 copy pyproject.toml
 copy Makefile
 copy .python-version
+copy .gitignore
 copy .github/workflows/tests.yml
 copy tests/test_ci_does_not_report_success_on_a_skipped_suite.py
 
