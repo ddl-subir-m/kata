@@ -3,8 +3,9 @@
 #
 #   ./scaffold.sh /path/to/repo
 #
-# Copies the template files, symlinks AGENTS.md to CLAUDE.md, and creates the triage labels if a
-# GitHub remote is already set. Never overwrites a file that exists, so it is safe to re-run.
+# Copies the template files, symlinks AGENTS.md to CLAUDE.md, runs git init if the folder is not a
+# repo yet, and creates the triage labels if the repo is already on GitHub. Otherwise it lists
+# exactly what is missing. Never overwrites a file that exists, so it is safe to re-run.
 set -euo pipefail
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/template" && pwd)"
@@ -24,6 +25,19 @@ copy() {
 }
 
 echo "Scaffolding $DEST"
+
+# The loop runs on git: implement and dispatch cut worktrees, land merges into main. A folder
+# with no git got every file and no word that nothing after it would work. git init adds .git
+# and touches no file, so it is as safe as the copies. A folder INSIDE another repo is not
+# initialised: a nested repo is a surprise, and the labels would land on the parent's GitHub.
+NESTED_IN=""
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+  git init -q -b main
+  echo "  create .git (git init, branch main)"
+elif [ "$(git rev-parse --show-toplevel)" != "$(pwd -P)" ]; then
+  NESTED_IN="$(git rev-parse --show-toplevel)"
+  echo "  ! $DEST is inside another repo: $NESTED_IN"
+fi
 
 # CLAUDE.md is the one file a live repo usually already has, and it is the one
 # carrying the standing rules. Skipping it quietly leaves a repo with every doc
@@ -68,10 +82,31 @@ else
   echo "  create AGENTS.md -> CLAUDE.md"
 fi
 
-# Declared before the branch: `set -u` is on, and reading this at the checklist when the
-# labels branch succeeded killed the script before it printed a single step.
-LABELS_PENDING=""
-if git rev-parse --git-dir >/dev/null 2>&1 && gh repo view >/dev/null 2>&1; then
+# The labels need a GitHub repo, and a GitHub repo needs four things before it. Find every one
+# that is missing, in the order they must happen, so step 0 lists exactly what is left - not
+# one generic command. `gh repo create` alone, in a folder with no commit, either fails or
+# clones an empty repo into a NEW subfolder, and the re-run below still finds no remote.
+# Declared before the checks: `set -u` is on, and reading an unset one kills the script.
+MISSING=""
+if [ -n "$NESTED_IN" ]; then
+  MISSING="nested"
+else
+  git rev-parse -q --verify HEAD >/dev/null 2>&1 || MISSING="$MISSING commit"
+  if ! command -v gh >/dev/null 2>&1; then
+    MISSING="$MISSING gh"
+  elif ! gh auth status >/dev/null 2>&1; then
+    MISSING="$MISSING auth"
+  fi
+  if ! git remote get-url origin >/dev/null 2>&1; then
+    MISSING="$MISSING remote"
+  elif [ -z "${MISSING# commit}" ] && ! gh repo view >/dev/null 2>&1; then
+    MISSING="$MISSING github"
+  fi
+fi
+
+# The labels need only the GitHub half. A repo already on GitHub with no commit yet still gets
+# them; the commit stays on the list for the worktrees.
+if [ -z "${MISSING# commit}" ]; then
   # Create what is missing. Never --force: that UPDATES a label that already exists, and
   # `wontfix` is one of GitHub's nine stock labels, so it exists on essentially every repo
   # from the day it is created. Measured on this repo: --force kept the description and
@@ -103,18 +138,65 @@ if git rev-parse --git-dir >/dev/null 2>&1 && gh repo view >/dev/null 2>&1; then
 else
   # Say it here, at the point of failure - and again in the checklist below, because a line
   # printed twelve lines above a numbered list is a line people scroll past.
-  echo "No GitHub remote yet - the triage labels were not created. See step 0 below."
-  LABELS_PENDING="yes"
+  echo "Not on GitHub yet - the triage labels were not created. See step 0 below."
 fi
 
 echo
 echo "Done. Next, by hand:"
 
-if [ -n "$LABELS_PENDING" ]; then
-  cat <<'LABELS'
-  0. Create the repo on GitHub, then run this script again:
-       gh repo create
-       ./scaffold.sh .
+if [ -n "$MISSING" ]; then
+  if [ "$MISSING" = " commit" ]; then
+    echo "  0. Make the first commit. The repo is on GitHub; only the commit is missing:"
+  else
+    echo "  0. Before the triage labels can exist. In this order, only what is still missing:"
+  fi
+  echo
+  case " $MISSING " in *" nested "*) cat <<NESTED
+     - This folder is inside another repo: $NESTED_IN
+       The files are now part of that repo, and no labels were created. If that is
+       what you meant, commit them there. If not, move them to a folder of their own
+       and run this script on it.
+
+NESTED
+  esac
+  case " $MISSING " in *" commit "*) cat <<'COMMIT'
+     - Make the first commit. implement and dispatch cut worktrees, and a worktree
+       needs a commit on main. Check nothing secret is staged before you commit:
+         git add -A && git status --short
+         git commit -m "Scaffold the ship loop"
+
+COMMIT
+  esac
+  case " $MISSING " in *" gh "*) cat <<'GH'
+     - Install the GitHub CLI:  brew install gh   (or https://cli.github.com)
+
+GH
+  esac
+  case " $MISSING " in *" gh "*|*" auth "*) cat <<'AUTH'
+     - Log in to GitHub. It opens a browser, so only you can do it:
+         gh auth login
+
+AUTH
+  esac
+  case " $MISSING " in *" remote "*) cat <<'REMOTE'
+     - Create the GitHub repo from this folder and push main to it. Pick the name
+       and --private or --public:
+         gh repo create <name> --private --source=. --push
+
+REMOTE
+  esac
+  case " $MISSING " in *" github "*) cat <<'GITHUB'
+     - origin is set, but gh cannot see it as a GitHub repo. Either it is on another
+       host, or your GitHub account has no access. The labels are GitHub labels: on
+       another tracker, create the six in docs/agents/triage-labels.md by hand.
+
+GITHUB
+  esac
+  # Nested and another-host end with no re-run: running again changes nothing. A lone missing
+  # commit ends with none too: the labels were already created above.
+  case "$MISSING" in *nested*|*github*|" commit") ;; *) cat <<'RERUN'
+     - Then run this script again, from the repo:
+         ./scaffold.sh .
 
      Re-running is how the labels get created, and it is safe: the script never
      overwrites a file that exists, so the second run writes nothing new and
@@ -124,10 +206,11 @@ if [ -n "$LABELS_PENDING" ]; then
 
      Numbered 0 because it comes before the rest: until those labels exist,
      `triage` has no vocabulary, and `ready-for-agent` - the one label the whole
-     queue turns on - cannot be set at all. On a repo that already has a remote
-     this step is done for you and you never see it.
+     queue turns on - cannot be set at all. On a repo already on GitHub this
+     step is done for you and you never see it.
 
-LABELS
+RERUN
+  esac
 fi
 
 cat <<'NEXT'

@@ -69,14 +69,35 @@ A repo with its own `Makefile` is the second one to check. The two gates must be
 `make test` and `make lint`; if those targets exist and mean something else, say so and stop rather
 than adding duplicates.
 
+### Is it on GitHub yet?
+
+The loop runs on git and GitHub. `implement` and `dispatch` cut worktrees, which need a commit on
+`main`. The triage labels need a GitHub repo. Look before you promise anything:
+
+    git -C <target> rev-parse --show-toplevel 2>/dev/null   # nothing = not a repo; another path = nested
+    git -C <target> rev-parse -q --verify HEAD              # nothing = no commit yet
+    git -C <target> remote get-url origin 2>/dev/null       # nothing = no remote
+    gh auth status >/dev/null 2>&1 && echo "gh ready"       # nothing = gh missing or logged out
+
+| What you find | What the script does | What is left |
+| --- | --- | --- |
+| Not a repo | `git init -b main` | Commit, then GitHub |
+| Inside another repo | Nothing. It never nests a repo | The person's call: see step 5 |
+| No commit | Nothing | The first commit |
+| No remote, or `gh` not ready | Nothing | `gh`, login, `gh repo create` |
+| On GitHub | Creates the labels | Nothing |
+
+**Inside another repo is the one to catch before writing.** The files become part of the parent
+repo. Ask whether that is meant before step 3, not after.
+
 ## 3. Confirm the target before writing
 
 Ask for the target directory if the person did not name one. Do not assume the current directory.
 
 Then say what will happen, in one line, and wait:
 
-> "This writes 14 files and an `AGENTS.md` symlink into `~/code/new-thing`. It skips anything that
-> already exists. Go ahead?"
+> "This writes 14 files and an `AGENTS.md` symlink into `~/code/new-thing`, and runs `git init`
+> there. It skips anything that already exists. Go ahead?"
 
 For a repo with history, name the real number instead, and name what it will not do:
 
@@ -94,7 +115,42 @@ The script never overwrites, so re-running it is safe. Say that — it removes t
 Report what it created and what it skipped. A long list of `skip` lines means the repo was already
 scaffolded; say so rather than reporting success.
 
-## 5. Walk the five manual steps
+## 5. Walk step 0: what the repo is still missing
+
+When the repo is not on GitHub yet, the script prints a step 0 that lists only what is missing,
+in order. **Do not paste that list back.** Take the person through it one item at a time: say
+what is missing and why it matters, do it or hand it over, check it took, then go to the next.
+
+| Missing | Who does it | What you do |
+| --- | --- | --- |
+| Inside another repo | The person decides | Ask: should these files be part of `<parent>`? If yes, they commit there, and there are no labels to make. If no, move them to their own folder and run the script again. **Never `git init` inside another repo.** |
+| First commit | You, after a yes | Show `git status --short`. Point out anything that looks secret or large before staging it. Ask, then commit: `git add -A && git commit -m "Scaffold the ship loop"` |
+| `gh` not installed | You, after a yes | Offer `brew install gh`. Off macOS, give the link: https://cli.github.com |
+| `gh` not logged in | **Only the person** | It opens a browser with their account. Ask them to type `! gh auth login` so it runs in this session. Never ask for a token |
+| No remote | You, after two answers | Ask for the name, and private or public. **Recommend private and the folder name.** Say it creates a real repo on their account, then run `gh repo create <name> --private --source=. --push` |
+| Remote on another host | The person | The labels are GitHub labels. Give them the six in `docs/agents/triage-labels.md` to create in their tracker by hand |
+
+**Check each one took** before the next: `git log --oneline -1` after the commit, `gh auth status`
+after the login, `gh repo view --json url` after the remote. A step that failed quietly makes every
+later step fail loudly and far from the cause.
+
+Then run the script again, from the repo. It writes no files the second time and creates only the
+labels. Go on to 6b if it kept any.
+
+> Worked example, an empty folder:
+>
+> "Two things are missing before the labels can exist. First, the first commit: `implement` needs
+> it to cut a worktree. Here is what would be staged: 14 files, nothing secret. Commit it?"
+> — yes — *commits, shows the hash.*
+> "Now the GitHub repo. I recommend `new-thing`, private. This creates a real repo on your
+> account. Go ahead, or a different name?"
+> — yes — *runs `gh repo create`, shows the URL, re-runs the script, reports 5 labels created and
+> `wontfix` kept.*
+
+The person can stop at any item. Then say what is still missing, and that `triage` and stage 03
+will not work until it is done.
+
+## 6. Walk the five manual steps
 
 The script prints these. Do not just repeat them — offer to do the ones you can.
 
@@ -109,7 +165,7 @@ The script prints these. Do not just repeat them — offer to do the ones you ca
 **Step 5 is the one people skip, and it is the one that matters.** A green suite proves nothing
 until you have seen it red. Run it and show the failure — do not just say the gate works.
 
-## 5b. Walk any label the script kept
+## 6b. Walk any label the script kept
 
 The script creates the six triage labels, but it never touches one that already exists - no
 `--force`, ever. It prints each kept label under a `!` line. Do not skim past that line.
@@ -130,13 +186,13 @@ A name that already exists is not a meaning that already matches. Read
 not yours to do, and the damage is invisible: every filter written against it still returns rows,
 so nothing looks broken until somebody trusts the queue.
 
-If the repo has no remote yet, the script defers all of this to step 0 and there is nothing to
-walk. Say so rather than inventing a check.
+If the repo is not on GitHub yet, no labels exist and there is nothing to walk until step 5 is
+done. Say so rather than inventing a check.
 
-## 6. The repo declares the plugin it needs
+## 7. The repo declares the plugin it needs
 
 `.claude/settings.json` is committed, and it names this marketplace and enables this plugin. Anyone
-who opens the repo gets the eight skills without installing anything.
+who opens the repo gets the kata skills without installing anything.
 
 Two things to tell the person:
 
@@ -150,7 +206,7 @@ Two things to tell the person:
 If the repo is private, a teammate without access gets a fetch failure rather than a helpful
 message. Say so when you hand back.
 
-## 7. Adjust the stack if it is not Python plus Node
+## 8. Adjust the stack if it is not Python plus Node
 
 The `Makefile` and the CI workflow assume `uv` and `npm`. If the repo is something else, change
 the two gate commands and say what you changed.
@@ -178,12 +234,14 @@ lint:
 The canary test becomes a check that the tools your suite skips on are present on CI — the same
 idea, different tool names.
 
-## 8. Hand back
+## 9. Hand back
 
 Say plainly:
 
 - the path you scaffolded,
 - which files were created and which were skipped,
+- **what is still missing from step 0**: the commit, the GitHub repo, the labels. Say "nothing"
+  when nothing is,
 - whether `make test` and `make lint` both ran green,
 - **whether you saw the plant go red**,
 - which of the five manual steps are still outstanding.

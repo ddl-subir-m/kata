@@ -107,6 +107,8 @@ To run it by hand instead:
     ~/.claude/plugins/marketplaces/subir/scaffold.sh /path/to/repo
 
 Fourteen files and one symlink into an empty directory; fewer into a repo that already has some.
+A folder that is not a git repo yet gets `git init` too. When the repo is not on GitHub yet, the
+script ends by listing exactly what is missing, in order, and `setup-repo` walks you through it.
 
     CLAUDE.md                     13 standing rules, with an example each
     .claude/settings.json         declares this marketplace, enables this plugin

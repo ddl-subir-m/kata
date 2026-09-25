@@ -48,7 +48,7 @@ brew install gh ripgrep node
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-No other plugins are required, and nothing is cloned by hand. The eight skills in section 2
+No other plugins are required, and nothing is cloned by hand. The skills in section 2
 cover every stage of the loop, scaffolding included.
 
 ---
