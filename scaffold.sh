@@ -221,6 +221,9 @@ cat <<'NEXT'
   5. Plant a deliberate failure in one test. Confirm it goes red. Remove it.
 
 Step 5 is the one people skip. A green suite proves nothing until you have seen it red.
+
+No idea written down yet, only a name? Leave 1 and 2. grill and shape-request fill them
+as the idea settles, and shape-request picks the language and rewrites the gates.
 NEXT
 
 if [ -n "$RULES_NOT_MERGED" ]; then

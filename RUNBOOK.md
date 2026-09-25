@@ -226,7 +226,8 @@ idea goes to stage 01 below.
 
 ## Stage 01: shape the request
 
-**`shape-request`** — one question at a time, covering scope, users, constraints and success.
+**`shape-request`** — one question at a time, covering scope, users, constraints and success,
+then the approach: where it runs, the seams, the riskiest unknown. Tickets come last.
 
 **`grill`** when the idea is not ready to be shaped yet. It stress-tests the thinking: works the
 frontier, names the weakest point, and never chooses for you. Reach for it when something sounds
@@ -472,6 +473,19 @@ the 13 standing rules do not arrive. The script drops them at `CLAUDE.kata.md` a
 merge is a person's judgement, not yours: their file may contradict the rules deliberately. Offer
 to walk it rule by rule. Never merge it silently.
 
+**A design system file at the root.** Look for one before the script runs:
+
+    ls <target>/DESIGN*.md <target>/design*.md 2>/dev/null
+
+A file such as `DESIGN.md` or `DESIGN-apple.md` (the getdesign.md format) is a design system the
+person brought. `design-check` reads only `docs/design-system.md`, so offer to move it there
+**before** the script runs. The script never overwrites, so it then keeps the person's file
+instead of writing the placeholder. Moved after, the placeholder must be replaced by hand, and
+every colour in the placeholder is `#000000`.
+
+**Is there a product idea yet?** In an empty folder there is often only a name. Ask once, in one
+line: "Is there an idea written down yet, or only the name?" The answer changes step 6 and step 8.
+
 **A repo with its own `.gitignore` keeps it.** Check that it ignores `.venv/`, `__pycache__/`,
 `.pytest_cache/` and `.ruff_cache/`. If a cache is not ignored, a test run changes tracked files,
 and `git worktree remove` refuses a worktree whose branch has already landed. Offer the missing
@@ -575,11 +589,22 @@ The script prints these. Do not just repeat them — offer to do the ones you ca
 
 | Step | Who does it | What you can offer |
 | --- | --- | --- |
-| 1. Fill `CONTEXT.md`, delete the example entry | Needs the person's domain | Ask for the first three words that matter, then write the entries with `domain-modeling` |
-| 2. Write ADR-0001 | Needs a real decision | Ask what was already decided that a newcomer would get wrong |
+| 1. Fill `CONTEXT.md`, delete the example entry | Needs the person's domain | Ask for the first three words that matter, then write the entries with `domain-modeling`. **No idea yet: skip it** |
+| 2. Write ADR-0001 | Needs a real decision | Ask what was already decided that a newcomer would get wrong. **No idea yet: skip it** |
 | 3. Fill `docs/design-system.md`, or delete it | Depends on the repo | Ask: does this repo have a UI? If no, delete the file |
 | 4. `make setup && make test && make lint` | You | Run it. Both gates must pass before any real code |
 | 5. Plant a deliberate failure, watch it go red | You | Do it, show the red output, remove the plant |
+
+**No idea yet means steps 1 and 2 wait.** Do not ask for words or a decision about a product
+nobody has described. An entry written from one vague sentence is worse than none: every later
+session reads it as settled.
+
+> Written too early: "Pulse — a heart rate monitor built from off-the-shelf parts." The product
+> turned out to be a browser app using the webcam. Until somebody corrected the entry, `what-now`
+> read it and suggested research on Bluetooth heart rate sensors.
+
+Say instead that `grill` and `shape-request` fill `CONTEXT.md` and `docs/adr/` as the idea
+settles. Delete the example entry, so it is not mistaken for a real one.
 
 **Step 5 is the one people skip, and it is the one that matters.** A green suite proves nothing
 until you have seen it red. Run it and show the failure — do not just say the gate works.
@@ -630,6 +655,11 @@ message. Say so when you hand back.
 The `Makefile` and the CI workflow assume `uv` and `npm`. If the repo is something else, change
 the two gate commands and say what you changed.
 
+**No code and no idea yet: do not ask for the stack.** A stack chosen before the product is
+described is a guess, and the approach step of `shape-request` makes the real choice later. Keep
+the template gates, so both still run green, and say plainly: "The gates are Python and Node for
+now. When `shape-request` picks the language, its first ticket rewrites them."
+
 **Keep three things whatever the stack:**
 
 1. There are exactly **two** targets, `test` and `lint`, and CI runs those targets rather than the
@@ -659,6 +689,8 @@ Say plainly:
 
 - the path you scaffolded,
 - which files were created and which were skipped,
+- **what waits for the idea**: the glossary words, ADR-0001 and the stack, when there was no idea
+  yet,
 - **what is still missing from step 0**: the commit, the GitHub repo, the labels. Say "nothing"
   when nothing is,
 - whether `make test` and `make lint` both ran green,
@@ -867,6 +899,9 @@ grounded one.
 | "What is the number that says this worked?" | No number means no finish line |
 | "What did you try that did not work?" | Finds the constraint nobody wrote down |
 | "If this ships and something breaks, what breaks first?" | Cheapest failure analysis there is |
+| "Where does this run, and what crosses the boundary?" | The how shapes the work as much as the what |
+| "Which part has nobody here built before?" | The riskiest part of a plan is usually technical, and nobody volunteers it |
+| "Who else has a say? A regulator, a licence, a platform?" | A rule set by someone outside the room ends the plan late. Ask when the idea touches health, money, personal data, someone else's data, or an app store |
 
 ## Stop pretending to be neutral
 
@@ -878,7 +913,19 @@ wastes the person's time.
 
 ## Know when to stop
 
-Stop when the next question would be invented rather than found. Then summarise:
+Stop when the next question would be invented rather than found.
+
+**Before you stop, check both halves.** The **what**: the problem, the users, the number. The
+**how**: where it runs, what it is built from, the part nobody here has built before. A grill that
+settled only the what has not run out of questions; it has stopped looking. When the how carries
+risk — a new platform, an algorithm nobody on the team has shipped, a limit set by someone else —
+grill it too, or name it under "still open" so `shape-request` settles it before any ticket.
+
+> Stopped too early: "The number is the product, 5 bpm, every skin tone. Nothing left to ask."
+> Nobody asked where the pipeline runs, what it is written in, or whether a phone camera can
+> do it at all. Each of those changes the tickets.
+
+Then summarise:
 
 - **What is settled**, in their words not yours.
 - **What is still open**, as questions.
@@ -969,6 +1016,10 @@ description: Turn a vague request, a settled conversation or an existing spec in
 Stage 01 of the loop. A request arrives as an idea, a ticket or an alert. You end this stage with
 a spec published to the issue tracker and small tickets that declare what blocks them.
 
+The order is: **what** done means (four areas), then **how** it will be built (the approach),
+then the spec, then the tickets. Tickets cut before the approach is settled are cut along the
+wrong lines, and get rewritten when the approach arrives.
+
 **Nobody writes the spec by hand. Nobody writes the ticket by hand.** The person decides whether
 the work is worth doing and whether the draft is right. You do the writing.
 
@@ -993,24 +1044,26 @@ person answered ten minutes ago tells them nobody was listening.
 
 | Starting point | What you do |
 | --- | --- |
-| A fresh request | Ask the four questions below, one at a time. |
+| A fresh request | Ask the four questions below, one at a time, then design the approach. |
 | A conversation that already settled it: a `grill`, a design talk, a prototype | Write the spec from what was said. Do not interview. Ask only about an area the conversation left thin. |
-| A spec that already exists, as an issue or a file | Go straight to the tickets. |
+| A spec that already exists, as an issue or a file | Check its approach, then go to the tickets. |
 | A `wayfinder` map that reached its destination | Write the spec from the map's Decisions so far, one spec per part that can land alone. |
 
-**After a conversation**, map what was said onto the four areas. For each one, point to the
-answer, or say it is thin:
+**After a conversation**, map what was said onto the four areas and the approach. For each one,
+point to the answer, or say it is thin:
 
 > From the grill: scope is incremental sync only; users are workspaces over 50,000 rows; the
 > 5-minute interval cannot change. Success is thin: nobody named a number. What p95 is acceptable?
 > **Recommended: under 90 seconds.** The complaints stop at about that point.
 
-Then ask about the thin ones, one at a time, as below. A conversation that settled all four gets no
-questions. Read the words back and publish.
+Then ask about the thin ones, one at a time, as below. A conversation that settled the four areas
+but not the approach goes straight to "Design the approach". A `grill` usually settles the what
+and leaves the how thin.
 
-**On an existing spec**, read it and check it against the four areas before you cut a ticket. A
-spec with no success criterion gives tickets with no finish line. Say which area is thin, and offer
-to fill it before you break it up. The person can say "cut the tickets anyway"; then the gap goes
+**On an existing spec**, read it and check it against the four areas and the approach before you
+cut a ticket. A spec with no success criterion gives tickets with no finish line; a spec with no
+approach gives tickets cut along the wrong lines. Say which is thin, and offer to fill it before
+you break it up. The person can say "cut the tickets anyway"; then the gap goes
 into the spec's open questions. Skip "Write the spec" and go to "Break it into tickets".
 
 **Too big for one spec?** Several parts that each need their own spec, and decisions that wait
@@ -1075,10 +1128,107 @@ Cover these four, in this order:
 >
 > Four answers. Now the spec writes itself, and the four answers are its four sections.
 
+## Design the approach
+
+The four areas say what done means. They do not say how it gets built, and the tickets depend on
+the how. So before the spec, settle the decisions that shape the tickets.
+
+**The test for which decisions belong here: would the other answer cut the tickets differently?**
+
+> Belongs here: "Does the heart-rate pipeline run in the browser or on a server?" A server adds
+> an upload ticket, an API ticket and a consent ticket. The browser adds none of those.
+> Stays in the ticket: "Which face detector?" Every ticket is the same whichever one wins.
+
+Read the code first. In a live repo most of the approach is already decided by what exists; say
+it in one line and ask only about what is open. In an empty repo, all of it is open.
+
+**Start with a picture of what ships**, before the first question. Three to five lines: what the
+person gets, where it runs, and what calls what. Every question after it is then a change to a
+picture the person can see, not a choice in the abstract.
+
+> What ships: a static web page, no server. In it, one module takes camera frames and gives back
+> a reading or "hold still". The test harness feeds the same module recorded clips.
+
+**Explain the recommendation, then the option it beats.** Leading with the trap you are ruling
+out makes the person think it is the plan.
+
+> Confusing: "The trap is to prototype in Python, then port to JavaScript. Two implementations
+> drift…"
+> Clear: "The pipeline is written once, and the page and the tests both call it. The other way,
+> a Python prototype then a port, gives two copies that drift."
+
+
+Ask one question at a time, with a recommended answer, as above. Cover these, in this order, and
+skip any the code or an ADR already answers:
+
+| Decision | The question behind it |
+| --- | --- |
+| Where it runs | Browser, server, device, a job? What crosses a boundary: the network, the device, a process? |
+| Language and runtime | What is it written in, and why that one? A prototype language that is not the product language is a rewrite ticket later. **When it is not what the gates run, the first ticket rewrites the gates** |
+| Modules and seams | What are the few modules, and what does each hide? Use `codebase-design`: fewest seams, and each one as high as it can go |
+| Test seam | Where can a test observe the behaviour without mocks, and with what input? **Where does the input come from?** |
+| Riskiest technical unknown | Which part has nobody here built before, or might not work at all? |
+
+**Ask who provides the test data only when a test cannot make it.** Recordings, hardware,
+third-party accounts, licensed datasets, production data: these need a person, and sometimes a
+signature. Ask before the tickets, because a ticket blocked on data nobody has is blocked forever.
+When the tests can build their own input, write one line, "tests create their own data", and do
+not ask.
+
+> Ask: "The tests need face clips with an oximeter reading taken at the same moment. You, with a
+> camera and an oximeter? Or a public dataset, which needs a licence you sign?"
+> Do not ask: an expense splitter. Tests make their own expenses.
+
+**The gates follow the language.** `setup-repo` writes Python and Node gates. When the approach
+picks something else, the first ticket rewrites `make test`, `make lint`, CI and the canary test for
+it, and every other ticket is blocked by it. Folded into another ticket, the gates change halfway
+through a wave and every worker's branch runs the old ones.
+
+**The riskiest unknown goes before the tickets.** When it can be settled by reading, offer
+`research`. When only running code can settle it, offer `prototype`, with the question named in one
+sentence. The person may say "cut the tickets anyway". Then the unknown becomes the first ticket,
+every ticket that depends on its answer is blocked by it, and the spec's open questions name it.
+
+Each decision that outlives one ticket becomes an ADR through `domain-modeling`, with the options
+that lost. The ADR is where the reasoning lives; the spec gives it one line and a link.
+
+### Worked example
+
+> **Request:** a browser app that shows a heart rate from the webcam. No code yet. The four areas
+> are settled: the number is the product, 5 bpm off an oximeter, every skin tone, a dim room at
+> worst.
+>
+> **Q1 (where it runs):** "In the browser or on a server? **Recommended: in the browser, nothing
+> uploaded.** A face video is the most private stream a page can take; a server needs consent,
+> bandwidth, and a reading that depends on the network."
+> **A:** "Browser."
+>
+> **Q2 (language):** "TypeScript, or Rust compiled to WebAssembly? **Recommended: TypeScript.** It
+> runs in the page and in the test harness with no build step between them."
+> **A:** "WebAssembly. I do not want the tuned constants readable."
+>
+> **Q3 (modules and seams):** "One module: frames and timestamps in, a reading or 'hold still' out.
+> The camera page and the test harness both feed it. Anything else a module?"
+> **A:** "No, one."
+>
+> **Q4 (test seam):** "Recorded face clips, each with an oximeter reading taken at the same time.
+> A test runs the module on a clip and checks the error. Nobody can generate those. Record them
+> yourself, or use a public dataset under its licence? **Recommended: research the datasets
+> first.** Recording every skin tone yourself is weeks."
+> **A:** "Research the datasets."
+>
+> **Q5 (riskiest unknown):** "Can a phone front camera reach 5 bpm on the darkest skin in a dim
+> room? Nobody knows, and only running code can say. **Recommended: prototype it before the
+> tickets.** If it cannot, half the tickets change."
+>
+> Five answers, two ADRs (browser only; WebAssembly), a dataset research file, and a prototype
+> that runs before any ticket exists. The first ticket rewrites the gates for Rust.
+
 ## Write the spec
 
 A spec is a committed, human-readable file that the product owner corrects before it lands. It is
-not a design document and it is not a plan.
+not a design document and it is not a plan. The approach section is a few lines and links to the
+ADRs; the reasoning lives there.
 
     # Incremental sync stays under 90 seconds at p95
     ## Problem
@@ -1086,7 +1236,8 @@ not a design document and it is not a plan.
     ## Users affected
     ## Constraints
     ## Success criteria  (the number, and how it is measured)
-    ## Open questions
+    ## Approach          (where it runs, the modules and seams, the test seam; links to ADRs)
+    ## Open questions    (the riskiest unknown, if it is not settled yet)
 
 ### Read the words back before you publish
 
@@ -1140,7 +1291,10 @@ the decision.
 
 ### Check the breakdown before you publish
 
-Show the tickets as a table first: title, what works when it is done, blocked by. Then ask:
+Show the tickets as a table first: title, what works when it is done, blocked by. **Refer to
+tickets by title, not number**, in the table and in "blocked by". The tracker numbers them when
+they are published, and the spec already took a number, so a table that says "9 is blocked by 5"
+becomes "#10 is blocked by #6" and the person has to map it in their head. Then ask:
 
 > - Is the size right? Too big for one session, or so small the tickets are noise?
 > - Does each ticket depend only on the tickets that really gate it?
@@ -1173,18 +1327,23 @@ The same trap: `sub_issue_id` is the database id. Check the link took:
 
     gh api repos/<owner>/<repo>/issues/<spec>/sub_issues --jq '.[].number'
 
+Then show which title became which number, once, in dependency order:
+
+> - #2 Gates run Rust and WebAssembly
+> - #3 The clip harness — blocked by #2
+
 ### Worked example
 
 From the spec above:
 
-| # | Ticket | Blocked by |
-| --- | --- | --- |
-| 1 | Measure the current p95 and record it in the spec | — |
-| 2 | Add a row-count index so the incremental query stops a full scan | 1 |
-| 3 | Batch the write-back into 500-row chunks | 1 |
-| 4 | Re-measure p95 and close the spec issue | 2, 3 |
+| Ticket | Blocked by |
+| --- | --- |
+| Measure the current p95 and record it in the spec | — |
+| An index so the incremental query stops a full scan | Measure the current p95 |
+| Write back in 500-row batches | Measure the current p95 |
+| Re-measure p95 and close the spec | The index; the batches |
 
-Ticket 1 exists because a success criterion with no baseline cannot be checked. That ticket is
+The measuring ticket exists because a success criterion with no baseline cannot be checked. That ticket is
 almost always the first one.
 
 ## Alongside, write the words down
@@ -1196,7 +1355,8 @@ the reason a vocabulary rots is that somebody meant to write it down later.
 ## Hand back
 
 Give the person: the spec issue number, the ticket numbers in dependency order, and any question
-you could not answer. Say plainly which of the four areas is still thin.
+you could not answer. Say plainly which of the four areas, or which part of the approach, is still
+thin.
 
 Then offer the next step. One ticket: `implement #<n>`. More than one: `dispatch #<spec>`, which
 runs the tickets in parallel worktrees and lands them in order.
@@ -3232,6 +3392,9 @@ cat <<'NEXT'
   5. Plant a deliberate failure in one test. Confirm it goes red. Remove it.
 
 Step 5 is the one people skip. A green suite proves nothing until you have seen it red.
+
+No idea written down yet, only a name? Leave 1 and 2. grill and shape-request fill them
+as the idea settles, and shape-request picks the language and rewrites the gates.
 NEXT
 
 if [ -n "$RULES_NOT_MERGED" ]; then

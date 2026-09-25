@@ -42,7 +42,8 @@ idea goes to stage 01 below.
 
 ## Stage 01: shape the request
 
-**`shape-request`** — one question at a time, covering scope, users, constraints and success.
+**`shape-request`** — one question at a time, covering scope, users, constraints and success,
+then the approach: where it runs, the seams, the riskiest unknown. Tickets come last.
 
 **`grill`** when the idea is not ready to be shaped yet. It stress-tests the thinking: works the
 frontier, names the weakest point, and never chooses for you. Reach for it when something sounds

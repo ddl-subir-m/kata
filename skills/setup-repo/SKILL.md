@@ -53,6 +53,19 @@ the 13 standing rules do not arrive. The script drops them at `CLAUDE.kata.md` a
 merge is a person's judgement, not yours: their file may contradict the rules deliberately. Offer
 to walk it rule by rule. Never merge it silently.
 
+**A design system file at the root.** Look for one before the script runs:
+
+    ls <target>/DESIGN*.md <target>/design*.md 2>/dev/null
+
+A file such as `DESIGN.md` or `DESIGN-apple.md` (the getdesign.md format) is a design system the
+person brought. `design-check` reads only `docs/design-system.md`, so offer to move it there
+**before** the script runs. The script never overwrites, so it then keeps the person's file
+instead of writing the placeholder. Moved after, the placeholder must be replaced by hand, and
+every colour in the placeholder is `#000000`.
+
+**Is there a product idea yet?** In an empty folder there is often only a name. Ask once, in one
+line: "Is there an idea written down yet, or only the name?" The answer changes step 6 and step 8.
+
 **A repo with its own `.gitignore` keeps it.** Check that it ignores `.venv/`, `__pycache__/`,
 `.pytest_cache/` and `.ruff_cache/`. If a cache is not ignored, a test run changes tracked files,
 and `git worktree remove` refuses a worktree whose branch has already landed. Offer the missing
@@ -156,11 +169,22 @@ The script prints these. Do not just repeat them — offer to do the ones you ca
 
 | Step | Who does it | What you can offer |
 | --- | --- | --- |
-| 1. Fill `CONTEXT.md`, delete the example entry | Needs the person's domain | Ask for the first three words that matter, then write the entries with `domain-modeling` |
-| 2. Write ADR-0001 | Needs a real decision | Ask what was already decided that a newcomer would get wrong |
+| 1. Fill `CONTEXT.md`, delete the example entry | Needs the person's domain | Ask for the first three words that matter, then write the entries with `domain-modeling`. **No idea yet: skip it** |
+| 2. Write ADR-0001 | Needs a real decision | Ask what was already decided that a newcomer would get wrong. **No idea yet: skip it** |
 | 3. Fill `docs/design-system.md`, or delete it | Depends on the repo | Ask: does this repo have a UI? If no, delete the file |
 | 4. `make setup && make test && make lint` | You | Run it. Both gates must pass before any real code |
 | 5. Plant a deliberate failure, watch it go red | You | Do it, show the red output, remove the plant |
+
+**No idea yet means steps 1 and 2 wait.** Do not ask for words or a decision about a product
+nobody has described. An entry written from one vague sentence is worse than none: every later
+session reads it as settled.
+
+> Written too early: "Pulse — a heart rate monitor built from off-the-shelf parts." The product
+> turned out to be a browser app using the webcam. Until somebody corrected the entry, `what-now`
+> read it and suggested research on Bluetooth heart rate sensors.
+
+Say instead that `grill` and `shape-request` fill `CONTEXT.md` and `docs/adr/` as the idea
+settles. Delete the example entry, so it is not mistaken for a real one.
 
 **Step 5 is the one people skip, and it is the one that matters.** A green suite proves nothing
 until you have seen it red. Run it and show the failure — do not just say the gate works.
@@ -211,6 +235,11 @@ message. Say so when you hand back.
 The `Makefile` and the CI workflow assume `uv` and `npm`. If the repo is something else, change
 the two gate commands and say what you changed.
 
+**No code and no idea yet: do not ask for the stack.** A stack chosen before the product is
+described is a guess, and the approach step of `shape-request` makes the real choice later. Keep
+the template gates, so both still run green, and say plainly: "The gates are Python and Node for
+now. When `shape-request` picks the language, its first ticket rewrites them."
+
 **Keep three things whatever the stack:**
 
 1. There are exactly **two** targets, `test` and `lint`, and CI runs those targets rather than the
@@ -240,6 +269,8 @@ Say plainly:
 
 - the path you scaffolded,
 - which files were created and which were skipped,
+- **what waits for the idea**: the glossary words, ADR-0001 and the stack, when there was no idea
+  yet,
 - **what is still missing from step 0**: the commit, the GitHub repo, the labels. Say "nothing"
   when nothing is,
 - whether `make test` and `make lint` both ran green,

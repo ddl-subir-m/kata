@@ -55,6 +55,9 @@ grounded one.
 | "What is the number that says this worked?" | No number means no finish line |
 | "What did you try that did not work?" | Finds the constraint nobody wrote down |
 | "If this ships and something breaks, what breaks first?" | Cheapest failure analysis there is |
+| "Where does this run, and what crosses the boundary?" | The how shapes the work as much as the what |
+| "Which part has nobody here built before?" | The riskiest part of a plan is usually technical, and nobody volunteers it |
+| "Who else has a say? A regulator, a licence, a platform?" | A rule set by someone outside the room ends the plan late. Ask when the idea touches health, money, personal data, someone else's data, or an app store |
 
 ## Stop pretending to be neutral
 
@@ -66,7 +69,19 @@ wastes the person's time.
 
 ## Know when to stop
 
-Stop when the next question would be invented rather than found. Then summarise:
+Stop when the next question would be invented rather than found.
+
+**Before you stop, check both halves.** The **what**: the problem, the users, the number. The
+**how**: where it runs, what it is built from, the part nobody here has built before. A grill that
+settled only the what has not run out of questions; it has stopped looking. When the how carries
+risk — a new platform, an algorithm nobody on the team has shipped, a limit set by someone else —
+grill it too, or name it under "still open" so `shape-request` settles it before any ticket.
+
+> Stopped too early: "The number is the product, 5 bpm, every skin tone. Nothing left to ask."
+> Nobody asked where the pipeline runs, what it is written in, or whether a phone camera can
+> do it at all. Each of those changes the tickets.
+
+Then summarise:
 
 - **What is settled**, in their words not yours.
 - **What is still open**, as questions.
