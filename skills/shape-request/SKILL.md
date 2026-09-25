@@ -35,6 +35,7 @@ person answered ten minutes ago tells them nobody was listening.
 | A fresh request | Ask the four questions below, one at a time. |
 | A conversation that already settled it: a `grill`, a design talk, a prototype | Write the spec from what was said. Do not interview. Ask only about an area the conversation left thin. |
 | A spec that already exists, as an issue or a file | Go straight to the tickets. |
+| A `wayfinder` map that reached its destination | Write the spec from the map's Decisions so far, one spec per part that can land alone. |
 
 **After a conversation**, map what was said onto the four areas. For each one, point to the
 answer, or say it is thin:
@@ -50,6 +51,9 @@ questions. Read the words back and publish.
 spec with no success criterion gives tickets with no finish line. Say which area is thin, and offer
 to fill it before you break it up. The person can say "cut the tickets anyway"; then the gap goes
 into the spec's open questions. Skip "Write the spec" and go to "Break it into tickets".
+
+**Too big for one spec?** Several parts that each need their own spec, and decisions that wait
+on other decisions. Say so and offer `wayfinder`, which charts the way first. Offer it once.
 
 ## Offer `grill` first when the idea is not ready to shape
 

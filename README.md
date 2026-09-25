@@ -21,14 +21,14 @@ claude plugin marketplace add ddl-subir-m/kata
 claude plugin install kata@subir
 ```
 
-That is the whole install, once per machine. Twenty skills, in every project.
+That is the whole install, once per machine. Twenty-two skills, in every project.
 
 Already inside a Claude Code session? `/plugin marketplace add ddl-subir-m/kata` then
 `/plugin install kata@subir`.
 
 ## Then just ask for things
 
-There is no step two. You now have twenty skills, and you use them by asking:
+There is no step two. You now have twenty-two skills, and you use them by asking:
 
 > "triage the inbox"  ·  "implement #42"  ·  "review this"  ·  "what now?"
 
@@ -48,7 +48,7 @@ skills, so a teammate who clones it is offered the same install.
 
 </details>
 
-## The twenty skills
+## The twenty-two skills
 
 | Stage | Skill | What it does |
 | --- | --- | --- |
@@ -58,9 +58,11 @@ skills, so a teammate who clones it is offered the same install.
 | 01 | `grill` | Stress-tests a plan with hard questions, reading the ADRs first and writing what settles back out |
 | — | `grill-only` | The same interview, writing nothing. For a repo you are a guest in |
 | 01 | `shape-request` | One question at a time until the spec writes itself, then tickets |
+| 01 | `wayfinder` | Work too big for one spec: a map of decision tickets, one resolved per session |
 | 01 | `research` | Investigates against primary sources, leaves a cited Markdown file |
 | 01/02 | `domain-modeling` | `CONTEXT.md` entries and ADRs whose titles are the decision |
 | 02 | `codebase-design` | Deep modules, seams, and where to hide complexity |
+| 02 | `improve-codebase-architecture` | Finds shallow modules in the hot spots, reports them visually, grills the one you pick |
 | 02 | `design-check` | Checks a screen against this repo's own design system |
 | 02 | `prototype` | Throwaway build to answer one design question |
 | 03 | `dispatch` | Runs a spec's tickets in parallel worktrees, in waves, then lands each one |
@@ -73,13 +75,14 @@ skills, so a teammate who clones it is offered the same install.
 | — | `wizard` | A bash wizard for the steps only a person can take |
 | — | `writing-for-agents` | Writing skills, `CLAUDE.md`, and the docs agents read |
 
-Twenty skills, about 2,060 tokens always-on. A skill's full text is read only when it fires. The
+Twenty-two skills, about 2,170 tokens always-on. A skill's full text is read only when it fires. The
 always-on figure is the real cost of breadth: it was 959 with ten skills. Each description is
 roughly 100 tokens, paid every session; `triage` added ~110, `dispatch` ~130, and `grill` is now the heaviest single
 skill at ~145, having grown when it learned to read the ADRs and write them. If a skill here is one
 you never reach for, disabling the plugin per repo is cheaper than carrying it — or fork the
 marketplace and trim the `skills` array in `plugin.json`. `what-now` and `grill-only` cost just ~40
-each, because neither fires on its own and both keep their descriptions short on purpose.
+each, and `wayfinder` and `improve-codebase-architecture` ~45, because none of them fires on its
+own and all four keep their descriptions short on purpose.
 
 ## Not sure which skill you want?
 

@@ -71,7 +71,7 @@ later, `/plugin install kata --marketplace ddl-subir-m/kata` adds and installs i
 For project scope prefer the CLI two-liner: it writes `extraKnownMarketplaces` as well as
 `enabledPlugins`, and a teammate needs both or the plugin reports as not installed.
 
-Twenty skills, about 2,060 tokens always-on. A skill's full text is read only when it fires.
+Twenty-two skills, about 2,170 tokens always-on. A skill's full text is read only when it fires.
 
 That always-on figure is the real cost of breadth: it was 959 with ten skills. Each description
 is roughly 100 tokens, paid every session. If a skill here is one you never reach for, disabling
@@ -155,9 +155,11 @@ the repo, never at the raw `marketplace.json`.
     "./skills/grill",
     "./skills/grill-only",
     "./skills/shape-request",
+    "./skills/wayfinder",
     "./skills/research",
     "./skills/domain-modeling",
     "./skills/codebase-design",
+    "./skills/improve-codebase-architecture",
     "./skills/design-check",
     "./skills/prototype",
     "./skills/dispatch",
@@ -234,6 +236,11 @@ right but nobody has pushed on it.
 leaves a cited Markdown file in the repo. A search snippet is not a source. It
 ends with a spec published as an issue, broken into tickets that declare what blocks them.
 
+**`wayfinder`** when the work is too big for one spec: weeks of it, with decisions that wait on
+other decisions. It charts a map issue with one decision ticket per sub-issue, then resolves one
+ticket per session until the way is clear. The map ends in `shape-request`, once per part that can
+land alone. Ask for it by name. One spec's worth of work does not need a map.
+
 ### Branch: does this request even need shaping?
 
 Not every request earns it. If the request has **one cause, one fix, and nothing left to settle**,
@@ -256,6 +263,11 @@ The reason a vocabulary rots is that somebody meant to write it down later.
 
 **`codebase-design`** for the shape of a module: depth, seams, what to hide, where a test can
 observe behaviour without mocks. Reach for it when the argument is about interfaces.
+
+**`improve-codebase-architecture`** when nobody has a design question yet, but the code is hard
+to change. It finds shallow modules in the files that change most, shows the best candidates as a
+visual report, and grills the one you pick. The candidate that settles goes to `shape-request`.
+Ask for it by name.
 
 **`prototype`** when a design question needs a **runnable** answer rather than an argument. Name
 the question in one sentence first; a prototype that answers no question is unreviewed code.
@@ -925,6 +937,7 @@ person answered ten minutes ago tells them nobody was listening.
 | A fresh request | Ask the four questions below, one at a time. |
 | A conversation that already settled it: a `grill`, a design talk, a prototype | Write the spec from what was said. Do not interview. Ask only about an area the conversation left thin. |
 | A spec that already exists, as an issue or a file | Go straight to the tickets. |
+| A `wayfinder` map that reached its destination | Write the spec from the map's Decisions so far, one spec per part that can land alone. |
 
 **After a conversation**, map what was said onto the four areas. For each one, point to the
 answer, or say it is thin:
@@ -940,6 +953,9 @@ questions. Read the words back and publish.
 spec with no success criterion gives tickets with no finish line. Say which area is thin, and offer
 to fill it before you break it up. The person can say "cut the tickets anyway"; then the gap goes
 into the spec's open questions. Skip "Write the spec" and go to "Break it into tickets".
+
+**Too big for one spec?** Several parts that each need their own spec, and decisions that wait
+on other decisions. Say so and offer `wayfinder`, which charts the way first. Offer it once.
 
 ## Offer `grill` first when the idea is not ready to shape
 
@@ -1125,6 +1141,207 @@ you could not answer. Say plainly which of the four areas is still thin.
 
 Then offer the next step. One ticket: `implement #<n>`. More than one: `dispatch #<spec>`, which
 runs the tickets in parallel worktrees and lands them in order.
+````
+
+### `skills/wayfinder/SKILL.md`
+
+````markdown
+---
+name: wayfinder
+description: Plan work too big for one spec as a map of decision tickets on the tracker, then resolve them one per session until the way is clear.
+disable-model-invocation: true
+---
+
+# Wayfinder
+
+An idea arrived that is too big for one session and too foggy for one spec. Nobody can yet see
+the way from here to the **destination**. This skill charts the way as a **map** on the issue
+tracker, then works its **decision tickets** one at a time until the route is clear.
+
+**Plan, do not build.** Each ticket resolves a decision. The map is done when nothing is left to
+decide before somebody builds the thing. When you feel the pull to just do the work, you have
+reached the edge of the map. That is the moment to hand off to `shape-request`.
+
+## Use it, or not
+
+| The work | Skill |
+| --- | --- |
+| One spec, one session of shaping, then tickets | `shape-request` |
+| Several specs, decisions that wait on other decisions, weeks of work | `wayfinder` |
+
+**Stop if charting finds no fog.** When the way is already clear, a map is ceremony. Say so and
+offer `shape-request`.
+
+> Needs a map: "Move billing off the monolith." Which data moves first depends on which service
+> owns invoices, which depends on a finance decision nobody has made.
+> Does not: "Add CSV export to the Sources table." One spec covers it.
+
+## Refer by name
+
+Every map and ticket is an issue, so it has a title. In everything a person reads, use the title
+with the number inside it: "Who owns invoices (#212)". Never a bare list of numbers. A line of
+`#212, #213, #214` tells the reader nothing.
+
+## The map
+
+**One issue, labelled `wayfinder:map`.** Its tickets are its **sub-issues**, so the map and the
+tracker's UI show the same tree. The map is an **index**, not a store: each decision lives in its
+ticket, and the map gives it one line and a link.
+
+The map body:
+
+```markdown
+## Destination
+What reaching the end looks like: a spec, a decision, or a change made in place. One or two lines.
+Every session reads this before it picks a ticket.
+
+## Notes
+The domain, the skills every session should use, standing preferences for this effort.
+
+## Decisions so far
+- [Who owns invoices (#212)](link): the billing service. Finance signs off on the schema.
+
+## Not yet specified
+Questions you can see coming but cannot yet state sharply. In scope, just not ticket-shaped yet.
+
+## Out of scope
+- [Multi-currency (#219)](link): past the destination. Returns only as a new effort.
+```
+
+Open tickets are **not** listed on the map. They are open sub-issues, found by query.
+
+## Tickets
+
+**One question per ticket, small enough for one session.** The body is the question only:
+
+```markdown
+## Question
+Which service owns an invoice once billing leaves the monolith?
+```
+
+The answer is not in the body. It goes in a comment when the ticket is resolved.
+
+Each ticket has one type label. The type names the skill that resolves it:
+
+| Label | Who | Resolved by |
+| --- | --- | --- |
+| `wayfinder:grill` | Person and agent | **`grill`**. The default. The agent never answers its own questions |
+| `wayfinder:prototype` | Person and agent | **`prototype`**, when the question is "how should it look" or "how should it behave" |
+| `wayfinder:research` | Agent alone | **`research`**, when a fact outside the repo blocks a decision |
+| `wayfinder:task` | Either | Work that must happen before a decision can. Signing up for a service to judge its API, moving data to see its shape. Use **`wizard`** when only the person can do it |
+
+A `task` ticket is the one type that does rather than decides. It earns its place by unblocking a
+decision, not by delivering the destination.
+
+**Triage skips these.** `triage` works only issues with `needs-triage` or no label. A `wayfinder:`
+label keeps map tickets out of the inbox, and a map ticket never gets `ready-for-agent`.
+
+## Fog and scope
+
+**The map is incomplete on purpose.** Do not chart what you cannot see yet.
+
+The test is whether you can **state** the question precisely now, not whether you can **answer**
+it now:
+
+- **Ticket**: the question is sharp, even when it is blocked.
+- **Not yet specified**: you cannot phrase it sharply yet. Do not cut the fog into ticket-sized
+  pieces. One patch can become three tickets later, or none.
+
+**Out of scope is a different thing.** Fog lies toward the destination. Work past the destination
+is out of scope, and it never becomes a ticket on this map. When a ticket turns out to be past the
+destination, **close it** and add one line to **Out of scope** with the reason. It does not go in
+**Decisions so far**: that section records the route walked, and a scope line is not a step on it.
+
+## The commands
+
+Create the labels that are missing. **Never `--force`**: it rewrites a label that already exists.
+
+    for L in wayfinder:map wayfinder:grill wayfinder:prototype wayfinder:research wayfinder:task; do
+      gh label list --limit 200 --json name --jq '.[].name' | grep -qx "$L" || gh label create "$L"
+    done
+
+Link a ticket to the map, and draw a blocking edge. Both take the **database id**, not the
+`#number`. A wrong id creates no link and reports no error.
+
+    ID=$(gh api repos/<owner>/<repo>/issues/<ticket> --jq .id)
+    gh api --method POST repos/<owner>/<repo>/issues/<map>/sub_issues -F sub_issue_id=$ID
+
+    BLOCKER=$(gh api repos/<owner>/<repo>/issues/<blocker> --jq .id)
+    gh api --method POST repos/<owner>/<repo>/issues/<ticket>/dependencies/blocked_by -F issue_id=$BLOCKER
+
+The **frontier** is every open sub-issue that nobody is assigned to, with every blocker closed:
+
+    gh api repos/<owner>/<repo>/issues/<map>/sub_issues \
+      --jq '.[] | select(.state=="open" and (.assignees|length)==0) | [.number, .title] | @tsv'
+
+Then, for each one, it is on the frontier only if this prints `0`:
+
+    gh api repos/<owner>/<repo>/issues/<n>/dependencies/blocked_by --jq '[.[] | select(.state=="open")] | length'
+
+## Chart the map
+
+The person brings a loose idea. Charting is one session, and it resolves no ticket.
+
+1. **Name the destination.** Use `grill` to settle what this map is finding its way to. The
+   destination fixes the scope, so it comes first. Settled words go to `CONTEXT.md` through
+   `domain-modeling`.
+2. **Find the frontier.** Grill again, **breadth-first** this time: across the whole space, not
+   deep on one thread. Surface the open decisions and the first ones you can take now.
+   **Stop if there is no fog.** Offer `shape-request` instead.
+3. **Create the map** issue: Destination and Notes filled in, Decisions so far empty, the fog
+   sketched under **Not yet specified**.
+4. **Create the tickets you can state now**, link each as a sub-issue, then wire the blocking edges
+   in a **second pass**. An issue needs its id before another one can point at it.
+5. **Start the research tickets.** Each `wayfinder:research` ticket goes to a background agent
+   running `research`, in parallel. Each one leaves its cited file and comments the path on its
+   ticket.
+6. **Stop.** Hand back the map, the frontier, and which tickets are waiting on the person.
+
+## Work the map
+
+The person brings the map. A ticket is optional; without one, you pick the next.
+
+1. **Read the map**, not every ticket body. Destination first.
+2. **Choose a ticket.** The one the person named, or the first on the frontier. **Claim it
+   before any work**, so a parallel session skips it:
+
+       gh issue edit <n> --add-assignee @me
+
+3. **Resolve it** with the skill its label names, and any skill the map's Notes name. Read a
+   closed ticket's resolution when you need its detail.
+4. **Record the answer** in three places, in this order:
+   - A comment on the ticket, starting `RESOLVED:`, with the answer and any fact a later ticket
+     needs: a URL, a row count, where a credential lives.
+   - Close the ticket.
+   - One line under the map's **Decisions so far**, linked to the ticket.
+5. **Update the map.** Add the tickets this answer made statable, and remove each one from **Not
+   yet specified** so it lives in one place only. Close any ticket the answer made pointless. Move
+   anything now past the destination to **Out of scope**.
+
+**Never resolve more than one ticket per session.** Research tickets are the exception. The next
+decision deserves a fresh window, and the map carries everything it needs.
+
+**Expect other sessions.** The person may work unblocked tickets in parallel. Read the map again
+before you edit it, and edit only the lines your ticket changed.
+
+## At the destination
+
+The map is done when the frontier is empty and **Not yet specified** is empty. What happens next
+depends on the destination:
+
+- **A spec**: `shape-request`, starting from the map's **Decisions so far**. It does not ask
+  again what the map already settled. A big destination is several specs; make one per part that
+  can land alone.
+- **A decision**: it is already an ADR, written by `grill` on the way.
+- **A change in place**, such as a migration: `shape-request` cuts it expand–contract.
+
+Close the map with a comment that links what it became.
+
+## Hand back
+
+- The map, by title and link.
+- The ticket resolved this session and its answer, or the tickets created while charting.
+- The frontier now, by title, and which tickets wait on the person.
 ````
 
 ### `skills/research/SKILL.md`
@@ -1397,6 +1614,180 @@ leaking.
 
 Read the neighbours of the line you change. A module's depth is a property of the whole surface,
 so a new parameter is a change to every caller's interface even when they do not pass it.
+````
+
+### `skills/improve-codebase-architecture/SKILL.md`
+
+````markdown
+---
+name: improve-codebase-architecture
+description: Find where the codebase is shallow, show the best deepening candidates as a visual report, then grill the one the person picks.
+disable-model-invocation: true
+---
+
+# Improve codebase architecture
+
+Find the places where a module is **shallow**, meaning its interface is nearly as big as what it
+hides. Show the best candidates in a report, then grill the one the person picks until it is a
+decision. The aim is code that is easier to test and easier for the next agent to find its way
+through.
+
+**This skill proposes. It does not refactor.** It ends with a report, and for the picked candidate
+an ADR or a spec. The refactor is a ticket, built like any other.
+
+## Use the two vocabularies exactly
+
+- **Architecture words come from `codebase-design`**: module, interface, depth, seam, adapter,
+  leverage, locality. Read that skill first.
+- **Domain words come from `CONTEXT.md`.** They name the module.
+
+Do not drift into "component", "service", "API layer" or "boundary". Each one is a word the
+reader must now map back onto the glossary, and two readers map it differently.
+
+> Bad: "Refactor the FooBarHandler service to clean up the order logic."
+> Good: "Deepen the Order intake module. Validation and pricing move behind one interface."
+
+**ADRs in `docs/adr/` are settled.** Do not propose what an ADR already rejected, unless the
+friction is real enough to reopen it. Then say so on the candidate: "Contradicts ADR-0007, and is
+worth reopening because…". A list of every refactor an ADR forbids is noise.
+
+## 1. Decide where to look
+
+Deepening a module pays off the next time somebody changes it. So look where change happens.
+
+- **The person named an area** (a module, a subsystem, a pain point): take it and skip the rest
+  of this step.
+- **Otherwise, find the hot spots** in the history:
+
+      git log --since="6 months ago" --format= --name-only | grep -v '^$' \
+        | sort | uniq -c | sort -rn | head -20
+
+  The files at the top pull your attention first. If the changes are scattered with no clear top,
+  widen the window.
+
+Then read `CONTEXT.md` and every ADR in that area before you read the code.
+
+## 2. Walk the code
+
+Hand the walk to a sub-agent so the file dumps stay out of this window. Tell it where to look,
+and to note friction rather than follow a checklist:
+
+- Understanding one concept means bouncing between many small modules.
+- A module's interface is nearly as complex as its implementation.
+- A pure function was pulled out only to be testable, and the real bugs live in how it is called.
+  That is lost **locality**.
+- Two modules are coupled and leak across the seam between them.
+- Code that is untested, or hard to test through its current interface.
+
+Put every suspect through the **deletion test**: delete the module in your head and inline it
+into its callers. Does the complexity **concentrate**, or does it only **move**?
+
+> `get_binding_row(cid, tname)` wraps one query. Delete it and every caller writes the same query
+> and the same no-row handling. The complexity only moved: the wrapper hid nothing. That is the
+> signal. The deep version absorbs the no-row case and the callers stop knowing about rows.
+
+**Done when** you have 3 to 6 candidates, ranked. Fewer is fine. **No candidate is a real
+result**: say so, and say where you looked.
+
+## 3. Write the report
+
+One self-contained HTML file in the temp directory, so nothing lands in the repo:
+
+    REPORT="${TMPDIR:-/tmp}/architecture-review-$(date +%Y%m%d-%H%M%S).html"
+
+Open it (`open` on macOS, `xdg-open` on Linux) and say the absolute path.
+
+One card per candidate:
+
+| Field | What goes in it |
+| --- | --- |
+| Title | The deepening, named in domain words: "Collapse the Order intake pipeline" |
+| Strength | `Strong`, `Worth exploring` or `Speculative`, as a badge |
+| Files | The modules involved, in monospace |
+| Before / after | Two diagrams side by side. This carries the card |
+| Problem | One sentence. What hurts |
+| Solution | One sentence. What changes |
+| Wins | Short bullets in glossary words |
+| ADR | One line, only when the candidate contradicts one |
+
+**Wins say what the glossary can measure.** "Locality: pricing bugs land in one module." "Leverage:
+one interface, 9 call sites." Not "cleaner code" or "easier to maintain": neither is in the
+glossary, and neither tells the person what they get.
+
+End with **Top recommendation**: which candidate first, in one sentence, linked to its card.
+
+Mermaid draws the diagrams. Use a flowchart for calls and dependencies, and colour a leak red:
+
+```html
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Architecture review - REPO</title>
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "neutral" });
+</script>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; max-width: 70rem; margin: 3rem auto; padding: 0 1rem; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .badge { padding: .1rem .5rem; border-radius: 1rem; font-size: 12px; }
+</style></head><body>
+<article>
+  <h2>Collapse the Order intake pipeline <span class="badge">Strong</span></h2>
+  <div class="pair">
+    <pre class="mermaid">flowchart LR
+      H[OrderHandler] --> V[OrderValidator] --> R[OrderRepo]
+      R -.leak.-> P[PricingClient]
+      classDef leak stroke:#dc2626,stroke-width:2px
+      class R,P leak</pre>
+    <pre class="mermaid">flowchart LR
+      H[OrderHandler] --> I[Order intake]
+      I --> P[PricingClient]</pre>
+  </div>
+</article>
+</body></html>
+```
+
+If a diagram needs a paragraph to be understood, redraw the diagram.
+
+**Do not propose interfaces yet.** That is the next step, with the person. End with one question:
+"Which of these do you want to explore?"
+
+## 4. Grill the one they pick
+
+Use **`grill`** on the picked candidate. It reads the ADRs, asks one question at a time, and writes
+what settles into `CONTEXT.md` and `docs/adr/`. Cover:
+
+- What goes behind the seam, and what stays in front of it.
+- What callers must still know. That is the new interface.
+- Which tests survive, and which move to the new seam.
+- The constraints: callers you cannot change, data you cannot move.
+
+**Design it twice** (`codebase-design`, principle 5). Sketch a second interface before you settle
+on the first. The comparison shows what the first one costs.
+
+**A rejection with a lasting reason becomes an ADR.** Offer it this way: "Record this as an ADR,
+so the next architecture review does not suggest it again?" Offer only when a future reviewer
+would need the reason. "Not worth it this quarter" does not need an ADR.
+
+> Worth an ADR: "Pricing stays a separate module. Finance deploys it on its own schedule."
+> Not worth one: "Too busy this sprint."
+
+## 5. Hand it on
+
+A candidate that settles goes to **`shape-request`**. It starts from the conversation you just
+had and does not ask again. A deepening is often a prefactor ticket followed by the change, and a
+wide one is cut expand–contract; `shape-request` knows both.
+
+**Do not file the candidates nobody picked.** The report is throwaway. A candidate with no
+symptom does not pass the filing bar, and ten `later` issues about module shape are how a tracker
+fills with things nobody will pick up. The ones that matter come back on the next review, because
+the hot spots are still hot.
+
+## Hand back
+
+- The report path.
+- The candidate picked, and what was decided.
+- Every ADR and `CONTEXT.md` entry written, by path.
+- The spec issue number, if it went to `shape-request`.
 ````
 
 ### `skills/design-check/SKILL.md`
@@ -2925,9 +3316,11 @@ Installed from the `kata` plugin. One per stage:
 | 00/01 Work the issue inbox, label what earns it | `triage` |
 | 01 Stress-test the thinking first | `grill` |
 | 01 Shape a request into a spec and tickets | `shape-request` |
+| 01 Chart work too big for one spec, one decision per session | `wayfinder` (ask for it by name) |
 | 01 Read the primary sources, leave a cited file | `research` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |
 | 02 Module shape, seams, what to hide | `codebase-design` |
+| 02 Find shallow modules worth deepening | `improve-codebase-architecture` (ask for it by name) |
 | 02 Check a screen before anyone opens it | `design-check` |
 | 02 Answer a design question with throwaway code | `prototype` |
 | 03 Build one ticket, reviewed and committed but not landed | `implement` |

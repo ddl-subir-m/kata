@@ -179,9 +179,11 @@ Installed from the `kata` plugin. One per stage:
 | 00/01 Work the issue inbox, label what earns it | `triage` |
 | 01 Stress-test the thinking first | `grill` |
 | 01 Shape a request into a spec and tickets | `shape-request` |
+| 01 Chart work too big for one spec, one decision per session | `wayfinder` (ask for it by name) |
 | 01 Read the primary sources, leave a cited file | `research` |
 | 01/02 Vocabulary and decisions | `domain-modeling` |
 | 02 Module shape, seams, what to hide | `codebase-design` |
+| 02 Find shallow modules worth deepening | `improve-codebase-architecture` (ask for it by name) |
 | 02 Check a screen before anyone opens it | `design-check` |
 | 02 Answer a design question with throwaway code | `prototype` |
 | 03 Build one ticket, reviewed and committed but not landed | `implement` |

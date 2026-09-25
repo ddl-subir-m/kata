@@ -52,6 +52,11 @@ right but nobody has pushed on it.
 leaves a cited Markdown file in the repo. A search snippet is not a source. It
 ends with a spec published as an issue, broken into tickets that declare what blocks them.
 
+**`wayfinder`** when the work is too big for one spec: weeks of it, with decisions that wait on
+other decisions. It charts a map issue with one decision ticket per sub-issue, then resolves one
+ticket per session until the way is clear. The map ends in `shape-request`, once per part that can
+land alone. Ask for it by name. One spec's worth of work does not need a map.
+
 ### Branch: does this request even need shaping?
 
 Not every request earns it. If the request has **one cause, one fix, and nothing left to settle**,
@@ -74,6 +79,11 @@ The reason a vocabulary rots is that somebody meant to write it down later.
 
 **`codebase-design`** for the shape of a module: depth, seams, what to hide, where a test can
 observe behaviour without mocks. Reach for it when the argument is about interfaces.
+
+**`improve-codebase-architecture`** when nobody has a design question yet, but the code is hard
+to change. It finds shallow modules in the files that change most, shows the best candidates as a
+visual report, and grills the one you pick. The candidate that settles goes to `shape-request`.
+Ask for it by name.
 
 **`prototype`** when a design question needs a **runnable** answer rather than an argument. Name
 the question in one sentence first; a prototype that answers no question is unreviewed code.
