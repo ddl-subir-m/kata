@@ -85,6 +85,7 @@ Use the `domain-modeling` skill to write these. Do not hand-roll the files; it k
 | A decision got made that outlives this branch | An ADR in `docs/adr/`, titled with the decision itself |
 | A word turned out to mean two things | A `CONTEXT.md` entry naming which one wins here |
 | An answer rested on a fact nobody has | Nothing yet - hand it to `research` first |
+| An answer rested on whether something works, and only running code can say ("does a phone camera give a usable signal?") | Nothing yet - name the one question and hand it to `prototype` first |
 | Something was ruled OUT, and why | The same ADR. The rejected option is half its value. |
 
 **Not every answer earns an ADR.** The bar is whether somebody six months out would otherwise
