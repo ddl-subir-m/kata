@@ -1,6 +1,6 @@
 ---
 name: shape-request
-description: Turn a vague request into a written spec and a set of small tickets. Use when an idea, a feature request or a half-formed ask arrives and nobody has written down what "done" means yet. Triggers - "shape this", "write a spec", "break this into tickets", "what should we build".
+description: Turn a vague request, a settled conversation or an existing spec into a written spec and small tickets. Use when nobody has written down what "done" means yet, after a grill, or when a spec needs tickets. Triggers - "shape this", "write a spec", "turn this into a spec", "break this into tickets", "what should we build".
 ---
 
 # Shape a request
@@ -24,6 +24,32 @@ Example of a request that does not:
 > "Users are complaining that sync is slow."
 
 The second one has no scope, no user, no number that says when it is fixed.
+
+## Start from what is already settled
+
+Before the first question, find which of three starting points this is. Asking again what the
+person answered ten minutes ago tells them nobody was listening.
+
+| Starting point | What you do |
+| --- | --- |
+| A fresh request | Ask the four questions below, one at a time. |
+| A conversation that already settled it: a `grill`, a design talk, a prototype | Write the spec from what was said. Do not interview. Ask only about an area the conversation left thin. |
+| A spec that already exists, as an issue or a file | Go straight to the tickets. |
+
+**After a conversation**, map what was said onto the four areas. For each one, point to the
+answer, or say it is thin:
+
+> From the grill: scope is incremental sync only; users are workspaces over 50,000 rows; the
+> 5-minute interval cannot change. Success is thin: nobody named a number. What p95 is acceptable?
+> **Recommended: under 90 seconds.** The complaints stop at about that point.
+
+Then ask about the thin ones, one at a time, as below. A conversation that settled all four gets no
+questions. Read the words back and publish.
+
+**On an existing spec**, read it and check it against the four areas before you cut a ticket. A
+spec with no success criterion gives tickets with no finish line. Say which area is thin, and offer
+to fill it before you break it up. The person can say "cut the tickets anyway"; then the gap goes
+into the spec's open questions. Skip "Write the spec" and go to "Break it into tickets".
 
 ## Offer `grill` first when the idea is not ready to shape
 
@@ -118,8 +144,52 @@ Publish it as a GitHub issue. See `docs/agents/issue-tracker.md` in the repo for
 
 ## Break it into tickets
 
-Small enough that one session can finish one. Each ticket names what blocks it, using GitHub's
-native issue dependencies so the block is visible in the UI:
+Small enough that one session can finish one.
+
+### Cut vertical slices, not layers
+
+Each ticket is a thin path through every layer it touches: schema, API, UI, tests. When it is
+done, something works end to end, and a person can see it or a test can check it. "Add the
+column", "add the endpoint", "add the screen" are three layers, and none of them is done on its
+own. "A user can filter by bucket" is one slice.
+
+Why it matters: a layer ticket cannot be checked alone, and it blocks the next layer. That turns
+`dispatch` into a single file of workers waiting on each other.
+
+- **Prefactor first.** When a change is hard because of how the code is shaped today, the first
+  ticket reshapes the code and changes no behaviour. Make the change easy, then make the easy
+  change. The `codebase-design` skill has the words for where the seam goes.
+- **A wide refactor is the exception.** One mechanical change whose blast radius crosses the
+  whole codebase, such as a renamed column or a retyped shared symbol, cannot land green as one
+  slice. Cut it expand–contract:
+  1. **Expand.** Add the new form beside the old. Nothing breaks.
+  2. **Migrate.** One ticket per batch of callers, per package or per directory. Each is blocked
+     by the expand ticket, and each keeps CI green because the old form still exists.
+  3. **Contract.** Delete the old form. Blocked by every migrate ticket.
+
+Each ticket body says three things: what works end to end when it is done, the acceptance
+criteria as a checklist, and what blocks it. No file paths and no code: they go stale before the
+ticket is picked up. The exception is a snippet from a prototype that says a decision more
+exactly than prose can, such as a state machine or a type shape. Keep only the part that carries
+the decision.
+
+### Check the breakdown before you publish
+
+Show the tickets as a table first: title, what works when it is done, blocked by. Then ask:
+
+> - Is the size right? Too big for one session, or so small the tickets are noise?
+> - Does each ticket depend only on the tickets that really gate it?
+> - Should any two merge, or any one split?
+
+Change the table and ask again until the person says yes. Nothing goes to the tracker before that.
+An extra blocking edge is cheap to draw and expensive later: `dispatch` runs in series what could
+run side by side.
+
+### Publish
+
+Publish in dependency order, blockers first, so each blocking edge points at a real issue. Each
+ticket names what blocks it, using GitHub's native issue dependencies so the block is visible in
+the UI:
 
     BLOCKER_ID=$(gh api repos/<owner>/<repo>/issues/<blocker> --jq .id)
     gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by \
